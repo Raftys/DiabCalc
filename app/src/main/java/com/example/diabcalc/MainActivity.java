@@ -2,13 +2,13 @@ package com.example.diabcalc;
 
 
 import android.content.Intent;
-import android.widget.*;
-
+import android.view.Menu;
+import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.appcompat.widget.SearchView;
 import android.os.Bundle;
-
+import android.widget.*;
 import java.util.ArrayList;
 
 /**
@@ -32,12 +32,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null)
             finalFoods = savedInstanceState.getParcelableArrayList("final");
-        } else if (finalFoods == null) {
+        else if (finalFoods == null)
             finalFoods = new ArrayList<>();
-        }
-
 
         search_foods = findViewById(R.id.search_food);
 
@@ -68,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putParcelableArrayListExtra("list", finalFoods);
             startActivityForResult(intent, 1);
         });
+
     }
 
     /**
@@ -83,5 +82,26 @@ public class MainActivity extends AppCompatActivity {
             this.finalFoods = data.getParcelableArrayListExtra("list");
         } else
             finalFoods = new ArrayList<>();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_menu, menu);
+        MenuItem item = menu.findItem(R.id.search_food);
+        SearchView searchView = (SearchView) item.getActionView();
+        searchView.setSaveEnabled(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                adapter.getFilter().filter(s);
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 }
