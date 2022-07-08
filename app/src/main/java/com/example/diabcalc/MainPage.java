@@ -2,10 +2,15 @@ package com.example.diabcalc;
 
 
 import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 
 import android.os.Bundle;
 
@@ -86,4 +91,22 @@ public class MainPage extends AppCompatActivity {
         foods = sqlHandler.getAll();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    public void item1(MenuItem item) {
+        System.out.println("Item 1 was Clicked!");
+    }
+
+    public void item2(MenuItem item) {
+        System.out.println("Item 2 was Clicked!");
+    }
+
+    public void item3(MenuItem item) {
+        System.out.println("Item 3 was Clicked!");
+    }
 }
