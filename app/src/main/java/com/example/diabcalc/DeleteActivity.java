@@ -4,10 +4,13 @@ package com.example.diabcalc;
 import static com.example.diabcalc.MainPage.sort;
 
 import android.content.Context;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.*;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 
 import android.os.Bundle;
 
@@ -76,6 +79,27 @@ public class DeleteActivity extends AppCompatActivity {
                     });
             builder.create().show();
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_menu, menu);
+        MenuItem item = menu.findItem(R.id.search_food);
+        androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) item.getActionView();
+        searchView.setSaveEnabled(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                adapter.getFilter().filter(s);
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 
 }
