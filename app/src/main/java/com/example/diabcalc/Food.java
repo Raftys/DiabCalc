@@ -24,6 +24,15 @@ public class Food implements Parcelable {
         this.grammar = 1;
     }
 
+    public Food(int id, String name, double car, double fat, double hour, double grammar) {
+        this.id = id;
+        this.name = name;
+        this.car = car;
+        this.fat = fat;
+        this.hour = hour;
+        this.grammar = grammar;
+    }
+
     public void calculate() {
         this.car = (this.car * this.grammar) / 100;
         this.fat = (this.fat * this.grammar) / 100;

@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <item
-            android:id="@+id/item1"
-            android:title="item1"
-            android:onClick="item1"/>
-        <item
-            android:id="@+id/item2"
-            android:title="item2"
-            android:onClick="item2"/>
-        <item
-            android:id="@+id/item3"
-            android:title="item3"
-            android:onClick="item3"/>
+
+        <group>
+                <item
+                    android:id="@+id/start"
+                    android:title="@string/start"
+                    android:onClick="start"/>
+                <item
+                    android:id="@+id/add"
+                    android:title="@string/add"
+                    android:onClick="add"/>
+                <item
+                    android:id="@+id/delete"
+                    android:title="@string/delete"
+                    android:onClick="delete"/>
+                <item
+                    android:id="@+id/favorites"
+                    android:title="@string/favorites"
+                    android:onClick="favorites"/>
+        </group>
 
 
 </menu>

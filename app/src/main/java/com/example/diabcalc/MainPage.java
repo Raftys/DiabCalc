@@ -4,18 +4,13 @@ package com.example.diabcalc;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-
 import android.os.Bundle;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * Αυτό είναι το αρχίκο activity, το οποίο ανοίγει με το που ανοίξει ο χρήστης την εφαρμογή.
@@ -25,6 +20,7 @@ import java.util.Arrays;
 public class MainPage extends AppCompatActivity {
 
     ArrayList<Food> foods;
+    HashMap<String,ArrayList<Food>> favorites;
 
     public static void sort(ArrayList<Food> arrayList) {
         Arrays.sort(new ArrayList[]{arrayList});
@@ -68,7 +64,6 @@ public class MainPage extends AppCompatActivity {
             intent.putParcelableArrayListExtra("foods", foods);
             startActivityForResult(intent, 1);
         });
-
     }
 
 
@@ -94,19 +89,43 @@ public class MainPage extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        menu.setGroupVisible(0,false);
         return super.onCreateOptionsMenu(menu);
     }
 
 
-    public void item1(MenuItem item) {
-        System.out.println("Item 1 was Clicked!");
+    public void start(MenuItem item) {
+        Intent intent = new Intent(MainPage.this, MainActivity.class);
+        sort(foods);
+        intent.putParcelableArrayListExtra("foods", foods);
+        startActivityForResult(intent, 1);
     }
 
-    public void item2(MenuItem item) {
+    public void add(MenuItem item) {
         System.out.println("Item 2 was Clicked!");
+        Intent intent = new Intent(MainPage.this, AddActivity.class);
+        startActivityForResult(intent, 1);
     }
 
-    public void item3(MenuItem item) {
-        System.out.println("Item 3 was Clicked!");
+    public void delete(MenuItem item) {
+        Intent intent = new Intent(MainPage.this, DeleteActivity.class);
+        sort(foods);
+        intent.putParcelableArrayListExtra("foods", foods);
+        startActivityForResult(intent, 1);
+    }
+
+    public void favorites(MenuItem item) {
+        Intent intent = new Intent(MainPage.this, FavoriteActivity.class);
+        favorites = new HashMap<>();
+        ArrayList<Food> temp = new ArrayList<>();
+        for(int i=0; i<3; i++)
+            temp.add(foods.get(i));
+        favorites.put("fav1",temp);
+        temp = new ArrayList<>();
+        for(int i=4; i<5; i++)
+            temp.add(foods.get(i));
+        favorites.put("fav2",temp);
+        intent.putExtra("favorites", favorites);
+        startActivityForResult(intent, 1);
     }
 }
