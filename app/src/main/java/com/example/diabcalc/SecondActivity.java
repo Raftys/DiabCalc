@@ -72,7 +72,7 @@ public class SecondActivity extends AppCompatActivity {
 
     /**
      * @param resultCode = 1 -> προσθήκη φαγητού στο μενού
-     *                   resultCode = 0 -> νέα μενού
+     *                   resultCode = 2 -> νέα μενού
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -84,8 +84,8 @@ public class SecondActivity extends AppCompatActivity {
             intent1.putParcelableArrayListExtra("list", finalFoods);
             setResult(1, intent1);
             finish();
-        } else if (resultCode == 0) {
-            setResult(0, intent1);
+        } else if (resultCode == 2) {
+            setResult(2, intent1);
             finish();
         }
     }

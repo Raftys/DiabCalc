@@ -21,7 +21,7 @@ public class Food implements Parcelable {
         this.car = car;
         this.fat = fat;
         this.hour = hour;
-        this.grammar = 1;
+        this.grammar = 100;
     }
 
     public Food(int id, String name, double car, double fat, double hour, double grammar) {
@@ -77,6 +77,10 @@ public class Food implements Parcelable {
 
     public double getFoodHour() {
         return this.hour;
+    }
+
+    public double getFoodGrammar() {
+        return this.grammar;
     }
 
     public void setFoodGrammar(double grammar) {

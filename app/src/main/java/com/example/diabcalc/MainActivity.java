@@ -32,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        try {
+            finalFoods = getIntent().getParcelableArrayListExtra("list");
+        } catch (Exception ignored) {}
+
         if (savedInstanceState != null)
             finalFoods = savedInstanceState.getParcelableArrayList("final");
         else if (finalFoods == null)
@@ -72,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * @param resultCode = 1 -> προσθήκη φαγητού στο μενού
      *                   resultCode = 1 -> επιστροφή από Activity 2
-     *                   resultCode = 0 -> νέα μενού
+     *                   resultCode = 2 -> νέα μενού
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

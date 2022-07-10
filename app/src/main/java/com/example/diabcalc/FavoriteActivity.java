@@ -1,5 +1,6 @@
 package com.example.diabcalc;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,14 +14,15 @@ import java.util.Objects;
 
 public class FavoriteActivity extends AppCompatActivity {
 
+    ListView listview;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite);
 
-        @SuppressWarnings("unchecked")
-        HashMap<String,ArrayList<Food>> favorites = (HashMap<String, ArrayList<Food>>) getIntent().getSerializableExtra("favorites");
-        System.out.println(Objects.requireNonNull(favorites.get("fav1")).get(0).getFoodName());
+        sqlHandler sqlHandler = new sqlHandler(this, null, 1);
+        HashMap<String,ArrayList<Food>> favorites = sqlHandler.getMenu();
 
         List<HashMap<String,String>> list = new ArrayList<>();
         SimpleAdapter adapter = new SimpleAdapter(this, list,
@@ -39,7 +41,7 @@ public class FavoriteActivity extends AppCompatActivity {
             list.add(temp);
         }
 
-        ListView listview = findViewById(R.id.favorites);
+        listview = findViewById(R.id.favorites);
         listview.setAdapter(adapter);
 
         listview.setOnItemClickListener((adapterView, view, i, l) -> {
@@ -47,10 +49,23 @@ public class FavoriteActivity extends AppCompatActivity {
             ArrayList<Food> finalFoods = favorites.get(list.get(i).get("line1"));
             intent.putParcelableArrayListExtra("list", finalFoods);
             startActivityForResult(intent, 1);
-
         });
+    }
 
-
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Intent intent = new Intent();
+        if (resultCode == 1) {
+            assert data != null;
+            ArrayList<Food> finalFoods = data.getParcelableArrayListExtra("list");
+            intent.putParcelableArrayListExtra("list", finalFoods);
+            setResult(1,intent);
+            finish();
+        }
+        else if(resultCode == 2) {
+            setResult(2,intent);
+            finish();
+        }
     }
 }

@@ -3,29 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="../../../../layout/custom_preview.xml" value="0.19694244604316546" />
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/layout-land/activity_add.xml" value="0.31040564373897706" />
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/layout-land/activity_main_page.xml" value="0.1591710758377425" />
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/layout-land/activity_third.xml" value="0.140625" />
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_add.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_favorite.xml" value="0.30570652173913043" />
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_main_page.xml" value="0.25" />
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_third.xml" value="0.12228260869565218" />
+        <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/list_item.xml" value="0.33" />
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/mipmap-anydpi-v26/ic_launcher_purple.xml" value="0.1" />
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/mipmap-anydpi-v26/ic_launcher_purple_round.xml" value="0.1" />
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
-        <entry key="app/src/main/res/layout-land/activity_add.xml" value="0.20502645502645503" />
-        <entry key="app/src/main/res/layout-land/activity_main.xml" value="0.2976190476190476" />
-        <entry key="app/src/main/res/layout/activity_add.xml" value="0.17864583333333334" />
-        <entry key="app/src/main/res/layout/activity_delete.xml" value="0.3515625" />
-        <entry key="app/src/main/res/layout/activity_favorite.xml" value="0.17864583333333334" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.17864583333333334" />
-        <entry key="app/src/main/res/layout/activity_main_page.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/list_item.xml" value="0.17864583333333334" />
-        <entry key="app/src/main/res/menu/main_menu.xml" value="0.1" />
-        <entry key="app/src/main/res/menu/search_menu.xml" value="0.1" />
-        <entry key="app/src/main/res/menu/search_menu.xml (land)" value="0.17864583333333334" />
       </map>
     </option>
   </component>

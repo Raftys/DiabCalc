@@ -45,6 +45,7 @@ public class ThirdActivity extends AppCompatActivity {
         ArrayList<String> list = new ArrayList<>();
         for (Food f : finalFoods)
             list.add("Name: " + f.getFoodName() +
+                    "\nGrammars: " + String.format("%.2f", f.getFoodGrammar()) +
                     "\nCarbohydrates: " + String.format("%.2f", f.getFoodCar()) +
                     "\nFat: " + String.format("%.2f", f.getFoodFat()) + " in " + f.getFoodHour() + " hour(s)." +
                     "\nSum: " + String.format("%.2f", f.getFoodCar() + f.getFoodFat()));
@@ -92,7 +93,7 @@ public class ThirdActivity extends AppCompatActivity {
         Button button2 = findViewById(R.id.newMenu);
         button2.setOnClickListener(view -> {
             Intent i = new Intent();
-            setResult(0, i);
+            setResult(2, i);
             finish();
         });
 

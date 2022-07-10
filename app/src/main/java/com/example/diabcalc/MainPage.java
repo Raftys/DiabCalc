@@ -1,6 +1,7 @@
 package com.example.diabcalc;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 /**
  * Αυτό είναι το αρχίκο activity, το οποίο ανοίγει με το που ανοίξει ο χρήστης την εφαρμογή.
@@ -20,7 +20,6 @@ import java.util.HashMap;
 public class MainPage extends AppCompatActivity {
 
     ArrayList<Food> foods;
-    HashMap<String,ArrayList<Food>> favorites;
 
     public static void sort(ArrayList<Food> arrayList) {
         Arrays.sort(new ArrayList[]{arrayList});
@@ -66,7 +65,6 @@ public class MainPage extends AppCompatActivity {
         });
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -76,11 +74,30 @@ public class MainPage extends AppCompatActivity {
             intent.putParcelableArrayListExtra("foods", foods);
             startActivityForResult(intent, 1);
         }
+        else if(resultCode == 1) {
+            Intent intent = new Intent(MainPage.this, MainActivity.class);
+            sort(foods);
+            assert data != null;
+            ArrayList<Food> finalFoods = data.getParcelableArrayListExtra("list");
+            intent.putParcelableArrayListExtra("foods", foods);
+            intent.putParcelableArrayListExtra("list", finalFoods);
+            startActivityForResult(intent, 1);
+
+        }
+        else if(resultCode == 2) {
+            Intent intent = new Intent(MainPage.this, MainActivity.class);
+            sort(foods);
+            System.out.println("yoooooooooooooooooooooooo");
+            assert data != null;
+            intent.putParcelableArrayListExtra("foods", foods);
+            startActivityForResult(intent, 1);
+
+        }
     }
 
     private void getFoods() {
         sqlHandler sqlHandler = new sqlHandler(this, null, 1);
-        if (sqlHandler.size() == 0)
+        if (sqlHandler.getSize(com.example.diabcalc.sqlHandler.TABLE_FOOD) == 0)
             sqlHandler.insertFromFile();
         foods = new ArrayList<>();
         foods = sqlHandler.getAll();
@@ -116,16 +133,6 @@ public class MainPage extends AppCompatActivity {
 
     public void favorites(MenuItem item) {
         Intent intent = new Intent(MainPage.this, FavoriteActivity.class);
-        favorites = new HashMap<>();
-        ArrayList<Food> temp = new ArrayList<>();
-        for(int i=0; i<3; i++)
-            temp.add(foods.get(i));
-        favorites.put("fav1",temp);
-        temp = new ArrayList<>();
-        for(int i=4; i<5; i++)
-            temp.add(foods.get(i));
-        favorites.put("fav2",temp);
-        intent.putExtra("favorites", favorites);
         startActivityForResult(intent, 1);
     }
 }
