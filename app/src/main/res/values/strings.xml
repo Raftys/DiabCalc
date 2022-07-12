@@ -17,4 +17,6 @@
     <string name="default_image_for_main_page">Default image for main page</string>
     <string name="search">Search</string>
     <string name="favorites">Favorites</string>
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
 </resources>

@@ -1,16 +1,18 @@
 package com.example.diabcalc;
 
-
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import android.os.Bundle;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Αυτό είναι το αρχίκο activity, το οποίο ανοίγει με το που ανοίξει ο χρήστης την εφαρμογή.
@@ -20,6 +22,9 @@ import java.util.Arrays;
 public class MainPage extends AppCompatActivity {
 
     ArrayList<Food> foods;
+    // NEW Drawer
+    public DrawerLayout drawerLayout;
+    public ActionBarDrawerToggle actionBarDrawerToggle;
 
     public static void sort(ArrayList<Food> arrayList) {
         Arrays.sort(new ArrayList[]{arrayList});
@@ -63,6 +68,24 @@ public class MainPage extends AppCompatActivity {
             intent.putParcelableArrayListExtra("foods", foods);
             startActivityForResult(intent, 1);
         });
+
+        // NEW Drawer
+        drawerLayout = findViewById(R.id.drawer);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+                R.string.nav_open, R.string.nav_close);
+
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
+
+    // NEW Drawer
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (actionBarDrawerToggle.onOptionsItemSelected(item))
+            return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -87,7 +110,6 @@ public class MainPage extends AppCompatActivity {
         else if(resultCode == 2) {
             Intent intent = new Intent(MainPage.this, MainActivity.class);
             sort(foods);
-            System.out.println("yoooooooooooooooooooooooo");
             assert data != null;
             intent.putParcelableArrayListExtra("foods", foods);
             startActivityForResult(intent, 1);
