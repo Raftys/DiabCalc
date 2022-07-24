@@ -2,7 +2,6 @@ package com.example.diabcalc;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
@@ -15,43 +14,63 @@ import java.util.Objects;
 public class FavoriteActivity extends AppCompatActivity {
 
     ListView listview;
+    HashMap<String,ArrayList<Food>> favorites;
+    sqlHandler sqlHandler;
+    List<HashMap<String,String>> list;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorite);
 
-        sqlHandler sqlHandler = new sqlHandler(this, null, 1);
-        HashMap<String,ArrayList<Food>> favorites = sqlHandler.getMenu();
-
-        List<HashMap<String,String>> list = new ArrayList<>();
+    void setList() {
+        favorites = sqlHandler.getMenu();
+        list = new ArrayList<>();
         SimpleAdapter adapter = new SimpleAdapter(this, list,
                 R.layout.list_item,
-                new String[] {"line1","line2"},
-                new int[]  {R.id.text1, R.id.text2});
+                new String[] {"line1","line2","line3"},
+                new int[]  {R.id.text1, R.id.text2, R.id.text3});
 
         for(String fav : favorites.keySet()) {
             HashMap<String, String> temp = new HashMap<>();
-            temp.put("line1",fav);
-
-            StringBuilder foods = new StringBuilder();
-            for(int i = 0; i< Objects.requireNonNull(favorites.get(fav)).size(); i++)
-                foods.append(i+1).append(".").append(Objects.requireNonNull(favorites.get(fav)).get(i).getFoodName()).append("\n");
-            temp.put("line2", foods.toString());
+            temp.put("line1", fav);
+            StringBuilder text2 = new StringBuilder();
+            StringBuilder text3 = new StringBuilder();
+            for(int i = 0; i< Objects.requireNonNull(favorites.get(fav)).size(); i++) {
+                text2.append(i + 1).append(".").append(Objects.requireNonNull(favorites.get(fav)).get(i).getFoodName());
+                text3.append(" (Grammars: ").append(Objects.requireNonNull(favorites.get(fav)).get(i).getFoodGrammar()).
+                        append(")");
+            }
+            temp.put("line2", text2.toString());
+            temp.put("line3", text3.toString());
             list.add(temp);
         }
 
         listview = findViewById(R.id.favorites);
         listview.setAdapter(adapter);
 
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_favorite);
+        sqlHandler = new sqlHandler(this, null, 1);
+        setList();
+
         listview.setOnItemClickListener((adapterView, view, i, l) -> {
             Intent intent = new Intent(FavoriteActivity.this, ThirdActivity.class);
             ArrayList<Food> finalFoods = favorites.get(list.get(i).get("line1"));
             intent.putParcelableArrayListExtra("list", finalFoods);
+            intent.putExtra("favorite",1);
+            intent.putExtra("menu_name",list.get(i).get("line1"));
+
             startActivityForResult(intent, 1);
         });
     }
 
+
+    /*
+    1 -> add
+    2 -> new
+    else -> back
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -66,6 +85,10 @@ public class FavoriteActivity extends AppCompatActivity {
         else if(resultCode == 2) {
             setResult(2,intent);
             finish();
+        }
+        else {
+            favorites = new HashMap<>();
+            setList();
         }
     }
 }

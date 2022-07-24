@@ -57,7 +57,7 @@ public class DeleteActivity extends AppCompatActivity {
                     .setPositiveButton("DAMN YEAH", (dialog, id) -> {
                         sqlHandler sqlHandler = new sqlHandler(context, null, 1);
                         System.out.println("name:" + arrayList.get(i));
-                        if (sqlHandler.deleteFood(arrayList.get(i))) {
+                        if (sqlHandler.deleteFood(arrayList.get(i),"Food")) {
                             Toast.makeText(DeleteActivity.this, "Food Deleted", Toast.LENGTH_SHORT).show();
                             list = new ArrayList<>();
                             list = sqlHandler.getAll();

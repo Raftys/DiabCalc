@@ -3,16 +3,22 @@ package com.example.diabcalc;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 
 /**
  * Σε αυτό το activity, εμφανίζεται μία λίστα (finalFoods) με τα φαγητά που έχει επιλέξει ο χρήστης
@@ -29,6 +35,8 @@ public class ThirdActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter;
     Intent intent;
     ArrayList<Food> finalFoods;
+    int bool;
+    private String menu_name = "";
 
     @SuppressLint({"DefaultLocale", "SetTextI18n"})
     @Override
@@ -37,6 +45,8 @@ public class ThirdActivity extends AppCompatActivity {
         setContentView(R.layout.activity_third);
 
         intent = getIntent();
+
+        bool = intent.getIntExtra("favorite",0);
 
         /*
           Λίστα με τα επιλεγμένα φαγητά
@@ -107,6 +117,55 @@ public class ThirdActivity extends AppCompatActivity {
             setResult(-1, i);
             finish();
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.third_activity_menu, menu);
+        MenuItem item = menu.getItem(0);
+        if(bool == 1) {
+            item.setIcon(android.R.drawable.star_big_on);
+            item.setChecked(true);
+        }
+        sqlHandler sqlHandler = new sqlHandler(ThirdActivity.this,null,1);
+        item.setOnMenuItemClickListener(menuItem -> {
+            if(item.isChecked()) {
+                item.setIcon(android.R.drawable.star_big_off);
+                item.setChecked(false);
+                String name =intent.getStringExtra("menu_name");
+                if(name != null)
+                    sqlHandler.deleteMenu(intent.getStringExtra("menu_name"));
+                else
+                    sqlHandler.deleteMenu(menu_name);
+                Toast.makeText(this, "Menu Removed From Favorites", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Menu Name");
+
+                EditText input = new EditText(this);
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+                builder.setPositiveButton("OK", (dialog, which) -> {
+                    menu_name = input.getText().toString();
+                    HashMap<String, ArrayList<Food>> hashMap = sqlHandler.getMenu();
+                    if(hashMap.containsKey(menu_name))
+                        Toast.makeText(this, "Menu Name Already Exists", Toast.LENGTH_SHORT).show();
+                    else {
+                        sqlHandler.addMenu(menu_name, finalFoods);
+                        item.setIcon(android.R.drawable.star_big_on);
+                        item.setChecked(true);
+                        Toast.makeText(this, "Menu Added To Favorites", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+                builder.show();
+            }
+            return false;
+        });
+        return super.onCreateOptionsMenu(menu);
+
     }
 
 }

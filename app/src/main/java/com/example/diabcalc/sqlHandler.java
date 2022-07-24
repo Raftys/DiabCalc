@@ -6,7 +6,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import java.io.*;
@@ -131,17 +130,22 @@ public class sqlHandler extends SQLiteOpenHelper {
         return null;
     }
 
-    public boolean deleteFood(String name) {
+    public boolean deleteFood(String name, String table_name) {
         Food food = findFood(name);
         if (food != null) {
             SQLiteDatabase db = this.getWritableDatabase();
-            db.delete(TABLE_FOOD, COLUMN_NAME + " = ?",
+            db.delete(table_name, COLUMN_NAME + " = ?",
                     new String[]{String.valueOf(food.getFoodName())});
             db.close();
             return true;
         }
         return false;
 
+    }
+
+    public void deleteMenu(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_FOODS,COLUMN_MENU_NAME + " = ?", new String[]{name});
     }
 
     public ArrayList<Food> getAll() {
@@ -175,27 +179,27 @@ public class sqlHandler extends SQLiteOpenHelper {
         cursor.moveToFirst();
         HashMap<String,ArrayList<Food>> temp = new HashMap<>();
         ArrayList<Food> arrayList = new ArrayList<>();
-
-        String menu = cursor.getString(6);
-        while (size >= 0) {
-            if(menu.equals(cursor.getString(6))) {
-                arrayList.add(new Food(Integer.parseInt(cursor.getString(0)),
-                        cursor.getString(1),
-                        Double.parseDouble(cursor.getString(2)),
-                        Double.parseDouble(cursor.getString(3)),
-                        Double.parseDouble(cursor.getString(4)),
-                        Double.parseDouble(cursor.getString(5))));
-                cursor.moveToNext();
-                size --;
+        try {
+            String menu = cursor.getString(6);
+            while (size >= 0) {
+                if (menu.equals(cursor.getString(6))) {
+                    arrayList.add(new Food(Integer.parseInt(cursor.getString(0)),
+                            cursor.getString(1),
+                            Double.parseDouble(cursor.getString(2)),
+                            Double.parseDouble(cursor.getString(3)),
+                            Double.parseDouble(cursor.getString(4)),
+                            Double.parseDouble(cursor.getString(5))));
+                    cursor.moveToNext();
+                    size--;
+                } else {
+                    temp.put(menu, arrayList);
+                    arrayList = new ArrayList<>();
+                    menu = cursor.getString(6);
+                }
             }
-            else {
-                temp.put(menu,arrayList);
-                arrayList = new ArrayList<>();
-                menu = cursor.getString(6);
-            }
-        }
-        temp.put(menu,arrayList);
-        cursor.close();
+            temp.put(menu, arrayList);
+            cursor.close();
+        } catch (Exception ignored) {}
         return temp ;
     }
 
