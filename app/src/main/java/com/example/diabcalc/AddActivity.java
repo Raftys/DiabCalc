@@ -30,6 +30,9 @@ public class AddActivity extends AppCompatActivity {
         EditText hour = findViewById(R.id.hour);
         context = this;
 
+        fat.setHint(getResources().getString(R.string.fat) + " (100)");
+        carbohydrates.setHint(getResources().getString(R.string.carbohydrates) +" (100)");
+
         Button add = findViewById(R.id.addFoodToDB);
 
         add.setOnClickListener(view -> {
@@ -38,7 +41,7 @@ public class AddActivity extends AppCompatActivity {
                     !fat.getText().toString().isEmpty() &&
                     !hour.getText().toString().isEmpty()) {
                 if (nameExist(name.getText().toString().trim().substring(0, 1).toUpperCase() + name.getText().toString().trim().substring(1)))
-                    Toast.makeText(AddActivity.this, "Food Already Exists", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddActivity.this, getResources().getString(R.string.foodExists), Toast.LENGTH_SHORT).show();
                 else {
                     sqlHandler sqlHandler = new sqlHandler(context, null, 1);
                     int k = generateId(sqlHandler);
@@ -47,10 +50,10 @@ public class AddActivity extends AppCompatActivity {
                             Double.parseDouble(carbohydrates.getText().toString()),
                             Double.parseDouble(fat.getText().toString()),
                             Double.parseDouble(hour.getText().toString())));
-                    Toast.makeText(AddActivity.this, "Food Added", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddActivity.this, getResources().getString(R.string.foodAdded), Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(AddActivity.this, "Not Enough Information", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddActivity.this, getResources().getString(R.string.notEnoughInformation), Toast.LENGTH_SHORT).show();
             }
         });
     }

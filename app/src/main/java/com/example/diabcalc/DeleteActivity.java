@@ -53,12 +53,11 @@ public class DeleteActivity extends AppCompatActivity {
 
         foods_list.setOnItemClickListener((adapterView, view, i, l) -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage("Are You Sure DUDE?")
-                    .setPositiveButton("DAMN YEAH", (dialog, id) -> {
+            builder.setMessage(getResources().getString(R.string.deleteQuestion))
+                    .setPositiveButton(getResources().getString(R.string.yes), (dialog, id) -> {
                         sqlHandler sqlHandler = new sqlHandler(context, null, 1);
-                        System.out.println("name:" + arrayList.get(i));
                         if (sqlHandler.deleteFood(arrayList.get(i),"Food")) {
-                            Toast.makeText(DeleteActivity.this, "Food Deleted", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DeleteActivity.this, getResources().getString(R.string.deleteConfirm), Toast.LENGTH_SHORT).show();
                             list = new ArrayList<>();
                             list = sqlHandler.getAll();
                             sort(list);
@@ -74,8 +73,8 @@ public class DeleteActivity extends AppCompatActivity {
                             foods_list = findViewById(R.id.list_to_delete);
                             foods_list.setAdapter(adapter);
                         } else
-                            Toast.makeText(DeleteActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
-                    }).setNegativeButton("NAH", (dialog, id) -> {
+                            Toast.makeText(DeleteActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                    }).setNegativeButton(getResources().getString(R.string.no), (dialog, id) -> {
                     });
             builder.create().show();
         });

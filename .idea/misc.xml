@@ -3,9 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout-land/activity_add.xml" value="0.3261261261261261" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout-land/activity_delete.xml" value="0.34234234234234234" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout-land/activity_main_page.xml" value="0.4070115433946131" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout-land/activity_main_page2.xml" value="0.4070115433946131" />
+        <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout-land/activity_third.xml" value="0.4648648648648649" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_add.xml" value="0.18854166666666666" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_delete.xml" value="0.19791666666666666" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_favorite.xml" value="0.25" />
@@ -13,12 +15,15 @@
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_main_page.xml" value="0.25" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_third.xml" value="0.19791666666666666" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/list_item.xml" value="0.33" />
+        <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/list_item2.xml" value="0.19791666666666666" />
+        <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/settings_activity.xml" value="0.25" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/switch_item.xml" value="0.16875" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/switch_layout.xml" value="0.16770833333333332" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/test.xml" value="0.3009833262077811" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/menu/main_menu.xml" value="0.28888888888888886" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/menu/search_menu.xml" value="0.28888888888888886" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/menu/third_activity_menu.xml" value="0.1" />
+        <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/xml/root_preferences.xml" value="0.18854166666666666" />
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/layout-land/activity_add.xml" value="0.31040564373897706" />
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/layout-land/activity_third.xml" value="0.140625" />
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_add.xml" value="0.358695652173913" />

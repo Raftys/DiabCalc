@@ -1,7 +1,7 @@
 package com.example.diabcalc;
 
-
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.text.InputType;
 import android.view.Menu;
@@ -15,7 +15,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -37,6 +36,7 @@ public class ThirdActivity extends AppCompatActivity {
     ArrayList<Food> finalFoods;
     int bool;
     private String menu_name = "";
+    Context context;
 
     @SuppressLint({"DefaultLocale", "SetTextI18n"})
     @Override
@@ -45,6 +45,7 @@ public class ThirdActivity extends AppCompatActivity {
         setContentView(R.layout.activity_third);
 
         intent = getIntent();
+        context = this;
 
         bool = intent.getIntExtra("favorite",0);
 
@@ -54,11 +55,12 @@ public class ThirdActivity extends AppCompatActivity {
         finalFoods = intent.getParcelableArrayListExtra("list");
         ArrayList<String> list = new ArrayList<>();
         for (Food f : finalFoods)
-            list.add("Name: " + f.getFoodName() +
-                    "\nGrammars: " + String.format("%.2f", f.getFoodGrammar()) +
-                    "\nCarbohydrates: " + String.format("%.2f", f.getFoodCar()) +
-                    "\nFat: " + String.format("%.2f", f.getFoodFat()) + " in " + f.getFoodHour() + " hour(s)." +
-                    "\nSum: " + String.format("%.2f", f.getFoodCar() + f.getFoodFat()));
+            list.add(getResources().getString(R.string.name) + ": " + f.getFoodName() +
+                    "\n" + getResources().getString(R.string.grammars) + ": " + String.format("%.2f", f.getFoodGrammar()) +
+                    "\n" + getResources().getString(R.string.carbohydrates) + ": " + String.format("%.2f", f.getFoodCar()) +
+                    "\n" + getResources().getString(R.string.fat) + ": " + String.format("%.2f", f.getFoodFat()) +
+                    " "  + getResources().getString(R.string.in) + ": " + String.format("%.2f", f.getFoodHour()) + " " + getResources().getString(R.string.hour) + "/ες" +
+                    "\n" + getResources().getString(R.string.sum) + ": " + String.format("%.2f", f.getFoodCar() + f.getFoodFat()));
 
         listView = findViewById(R.id.final_list);
         adapter = new ArrayAdapter<>(
@@ -80,10 +82,10 @@ public class ThirdActivity extends AppCompatActivity {
             fats += f.getFoodFat();
         }
         double sum = cars + fats;
-        textView.setText("Total Units: " + String.format("%.2f", sum) +
-                "\nTotal Carbohydrates: " + String.format("%.2f", cars) +
-                "\nTotal Fat: " + String.format("%.2f", fats) +
-                " in " + finalFoods.get(0).getFoodHour() + " hour(s).");
+        textView.setText(getResources().getString(R.string.totalUnits) + ": " + String.format("%.2f", sum) +
+                "\n" + getResources().getString(R.string.totalCarbohydrates) + ": " + String.format("%.2f", cars) +
+                "\n" + getResources().getString(R.string.totalFat) + ": " + String.format("%.2f", fats) +
+                " "  + getResources().getString(R.string.in) + ": " + finalFoods.get(0).getFoodHour() + " " + getResources().getString(R.string.hour) + "/ες");
 
 
         /*
@@ -130,14 +132,20 @@ public class ThirdActivity extends AppCompatActivity {
         sqlHandler sqlHandler = new sqlHandler(ThirdActivity.this,null,1);
         item.setOnMenuItemClickListener(menuItem -> {
             if(item.isChecked()) {
-                item.setIcon(android.R.drawable.star_big_off);
-                item.setChecked(false);
-                String name =intent.getStringExtra("menu_name");
-                if(name != null)
-                    sqlHandler.deleteMenu(intent.getStringExtra("menu_name"));
-                else
-                    sqlHandler.deleteMenu(menu_name);
-                Toast.makeText(this, "Menu Removed From Favorites", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Are You Sure ?")
+                        .setPositiveButton("Yep", (dialog, id) -> {
+                            item.setIcon(android.R.drawable.star_big_off);
+                            item.setChecked(false);
+                            String name =intent.getStringExtra("menu_name");
+                            if(name != null)
+                                sqlHandler.deleteMenu(intent.getStringExtra("menu_name"));
+                            else
+                                sqlHandler.deleteMenu(menu_name);
+                            Toast.makeText(this, "Menu Removed From Favorites", Toast.LENGTH_SHORT).show();
+                        }).setNegativeButton("NAH", (dialog, id) -> {
+                        });
+                builder.create().show();
             }
             else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);

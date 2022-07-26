@@ -24,21 +24,18 @@ public class FavoriteActivity extends AppCompatActivity {
         list = new ArrayList<>();
         SimpleAdapter adapter = new SimpleAdapter(this, list,
                 R.layout.list_item,
-                new String[] {"line1","line2","line3"},
-                new int[]  {R.id.text1, R.id.text2, R.id.text3});
+                new String[] {"line1","line2"},
+                new int[]  {R.id.text1, R.id.text2});
 
         for(String fav : favorites.keySet()) {
-            HashMap<String, String> temp = new HashMap<>();
-            temp.put("line1", fav);
+            HashMap<String,String> temp = new HashMap<>();
+            temp.put("line1",fav);
             StringBuilder text2 = new StringBuilder();
-            StringBuilder text3 = new StringBuilder();
-            for(int i = 0; i< Objects.requireNonNull(favorites.get(fav)).size(); i++) {
-                text2.append(i + 1).append(".").append(Objects.requireNonNull(favorites.get(fav)).get(i).getFoodName());
-                text3.append(" (Grammars: ").append(Objects.requireNonNull(favorites.get(fav)).get(i).getFoodGrammar()).
-                        append(")");
-            }
+            for(int i = 0; i< Objects.requireNonNull(favorites.get(fav)).size(); i++)
+                text2.append(i + 1).append(".").append(Objects.requireNonNull(favorites.get(fav)).get(i).getFoodName()).
+                        append(" (").append(Objects.requireNonNull(favorites.get(fav)).get(i).getFoodGrammar()).
+                        append("g)\n");
             temp.put("line2", text2.toString());
-            temp.put("line3", text3.toString());
             list.add(temp);
         }
 
