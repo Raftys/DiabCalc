@@ -3,7 +3,7 @@
     <string name="name">Name</string>
     <string name="carbohydrates">Carbohydrates (100)</string>
     <string name="fat">Fat (100)</string>
-    <string name="hour">Hour</string>
+    <string name="hour">Hour(s)</string>
     <string name="add">Add</string>
     <string name="back">Back</string>
     <string name="delete">Delete</string>
@@ -28,12 +28,18 @@
     <string name="in">in</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="deleteQuestion">Are You Sure?</string>
+    <string name="areYouSure">Are You Sure?</string>
     <string name="deleteConfirm">Food Deleted</string>
     <string name="error">Error</string>
     <string name="foodExists">Food Already Exists</string>
     <string name="foodAdded">Food Added</string>
     <string name="notEnoughInformation">Not Enough Information</string>
+    <string name="menuName">Menu Name: </string>
+    <string name="menuRemoved">Menu Removed From Favorites</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="menuAlreadyExists">Menu Name Already Exists</string>
+    <string name="menuAdded">Menu Added To Favorites</string>
 
 
 

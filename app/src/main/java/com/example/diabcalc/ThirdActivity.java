@@ -59,7 +59,7 @@ public class ThirdActivity extends AppCompatActivity {
                     "\n" + getResources().getString(R.string.grammars) + ": " + String.format("%.2f", f.getFoodGrammar()) +
                     "\n" + getResources().getString(R.string.carbohydrates) + ": " + String.format("%.2f", f.getFoodCar()) +
                     "\n" + getResources().getString(R.string.fat) + ": " + String.format("%.2f", f.getFoodFat()) +
-                    " "  + getResources().getString(R.string.in) + ": " + String.format("%.2f", f.getFoodHour()) + " " + getResources().getString(R.string.hour) + "/ες" +
+                    " "  + getResources().getString(R.string.in) + ": " + String.format("%.2f", f.getFoodHour()) + " " + getResources().getString(R.string.hour) +
                     "\n" + getResources().getString(R.string.sum) + ": " + String.format("%.2f", f.getFoodCar() + f.getFoodFat()));
 
         listView = findViewById(R.id.final_list);
@@ -85,7 +85,7 @@ public class ThirdActivity extends AppCompatActivity {
         textView.setText(getResources().getString(R.string.totalUnits) + ": " + String.format("%.2f", sum) +
                 "\n" + getResources().getString(R.string.totalCarbohydrates) + ": " + String.format("%.2f", cars) +
                 "\n" + getResources().getString(R.string.totalFat) + ": " + String.format("%.2f", fats) +
-                " "  + getResources().getString(R.string.in) + ": " + finalFoods.get(0).getFoodHour() + " " + getResources().getString(R.string.hour) + "/ες");
+                " "  + getResources().getString(R.string.in) + ": " + finalFoods.get(0).getFoodHour() + " " + getResources().getString(R.string.hour));
 
 
         /*
@@ -133,8 +133,8 @@ public class ThirdActivity extends AppCompatActivity {
         item.setOnMenuItemClickListener(menuItem -> {
             if(item.isChecked()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage("Are You Sure ?")
-                        .setPositiveButton("Yep", (dialog, id) -> {
+                builder.setMessage(getResources().getString(R.string.areYouSure))
+                        .setPositiveButton(getResources().getString(R.string.yes), (dialog, id) -> {
                             item.setIcon(android.R.drawable.star_big_off);
                             item.setChecked(false);
                             String name =intent.getStringExtra("menu_name");
@@ -142,32 +142,32 @@ public class ThirdActivity extends AppCompatActivity {
                                 sqlHandler.deleteMenu(intent.getStringExtra("menu_name"));
                             else
                                 sqlHandler.deleteMenu(menu_name);
-                            Toast.makeText(this, "Menu Removed From Favorites", Toast.LENGTH_SHORT).show();
-                        }).setNegativeButton("NAH", (dialog, id) -> {
+                            Toast.makeText(this, getResources().getString(R.string.menuRemoved), Toast.LENGTH_SHORT).show();
+                        }).setNegativeButton(getResources().getString(R.string.no), (dialog, id) -> {
                         });
                 builder.create().show();
             }
             else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Menu Name");
+                builder.setTitle(getResources().getString(R.string.menuName));
 
                 EditText input = new EditText(this);
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
                 builder.setView(input);
 
-                builder.setPositiveButton("OK", (dialog, which) -> {
+                builder.setPositiveButton(getResources().getString(R.string.ok), (dialog, which) -> {
                     menu_name = input.getText().toString();
                     HashMap<String, ArrayList<Food>> hashMap = sqlHandler.getMenu();
                     if(hashMap.containsKey(menu_name))
-                        Toast.makeText(this, "Menu Name Already Exists", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getResources().getString(R.string.menuAlreadyExists), Toast.LENGTH_SHORT).show();
                     else {
                         sqlHandler.addMenu(menu_name, finalFoods);
                         item.setIcon(android.R.drawable.star_big_on);
                         item.setChecked(true);
-                        Toast.makeText(this, "Menu Added To Favorites", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getResources().getString(R.string.menuAdded), Toast.LENGTH_SHORT).show();
                     }
                 });
-                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+                builder.setNegativeButton(getResources().getString(R.string.cancel), (dialog, which) -> dialog.cancel());
                 builder.show();
             }
             return false;

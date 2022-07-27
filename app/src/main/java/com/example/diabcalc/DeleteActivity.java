@@ -53,7 +53,7 @@ public class DeleteActivity extends AppCompatActivity {
 
         foods_list.setOnItemClickListener((adapterView, view, i, l) -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage(getResources().getString(R.string.deleteQuestion))
+            builder.setMessage(getResources().getString(R.string.areYouSure))
                     .setPositiveButton(getResources().getString(R.string.yes), (dialog, id) -> {
                         sqlHandler sqlHandler = new sqlHandler(context, null, 1);
                         if (sqlHandler.deleteFood(arrayList.get(i),"Food")) {

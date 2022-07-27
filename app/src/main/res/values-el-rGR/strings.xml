@@ -4,7 +4,7 @@
     <string name="name">Όνομα</string>
     <string name="carbohydrates">Υδατάνθρακες</string>
     <string name="fat">Λιπαρά</string>
-    <string name="hour">Ώρα</string>
+    <string name="hour">Ώρα/ες</string>
     <string name="back">Πίσω</string>
     <string name="delete">Διαγραφή</string>
     <string name="textview">Κείμενο</string>
@@ -21,7 +21,7 @@
     <string name="favorite">Αγαπημένα</string>
     <string name="add">Προσθήκη</string>
     <string name="text2">DiabCalc</string>
-    <string name="new_menu">Καινούργιο Μενού</string>
+    <string name="new_menu">Καινούργιο</string>
     <string name="sum">Σύνολο</string>
     <string name="totalUnits">Σύνολο Μονάδων</string>
     <string name="totalCarbohydrates">Σύνολο Υδατανθράκων</string>
@@ -29,10 +29,16 @@
     <string name="in">σε</string>
     <string name="yes">Ναι</string>
     <string name="no">Όχι</string>
-    <string name="deleteQuestion">Είστε Σίγουροι;</string>
+    <string name="areYouSure">Είστε Σίγουροι;</string>
     <string name="deleteConfirm">Το Φαγητό Διαγράφηκε</string>
     <string name="error">Σφάλμα</string>
     <string name="foodExists">Το Φαγητό Υπάρχει Ήδη </string>
     <string name="foodAdded">Προστέθηκε</string>
     <string name="notEnoughInformation">Μη Επαρκείς Πληροφορίες</string>
+    <string name="menuName">Όνομα Μενού: </string>
+    <string name="menuRemoved">Το Μενού Αφαιρέθηκε Από Τα Αγαπημένα</string>
+    <string name="ok">Οκ</string>
+    <string name="cancel">Άκυρο</string>
+    <string name="menuAlreadyExists">Το Μενού Υπάρχει Ήδη</string>
+    <string name="menuAdded">Το Μενού Προστέθηκε Στα Αγαπημένα</string>
 </resources>
