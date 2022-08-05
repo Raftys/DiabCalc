@@ -20,7 +20,6 @@ public class sqlHandler extends SQLiteOpenHelper {
     private static int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "data.db";
     public static final String TABLE_FOOD = "Food";
-    public static final String TABLE_MENU = "Menu";
     public static final String TABLE_FOODS = "Foods";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_MENU_NAME = "Menu_name";
@@ -29,6 +28,9 @@ public class sqlHandler extends SQLiteOpenHelper {
     public static final String COLUMN_FAT = "fat";
     public static final String COLUMN_HOUR = "hour";
     public static final String COLUMN_GRAMMAR = "grammar";
+    /*0 = Default
+     * 1 = Edited*/
+    public static final String COLUMN_EDITED = "edit";
     private final Context context;
 
     public sqlHandler(@Nullable Context context, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
@@ -46,13 +48,8 @@ public class sqlHandler extends SQLiteOpenHelper {
                 COLUMN_CAR + " DECIMAL," +
                 COLUMN_FAT + " DECIMAL," +
                 COLUMN_HOUR + " DECIMAL," +
-                COLUMN_GRAMMAR + " DECIMAL" + ")";
-
-        String CREATE_MENU_TABLE = "CREATE TABLE " +
-                TABLE_MENU + "(" +
-                COLUMN_ID +" INTEGER NOT NULL ," +
-                COLUMN_NAME + " TEXT," +
-                "PRIMARY KEY(id))";
+                COLUMN_GRAMMAR + " DECIMAL, "  +
+                COLUMN_EDITED + " INTEGER" + ")";
 
         String CREATE_FOODS_TABLE = "CREATE TABLE " +
                 TABLE_FOODS  + "(" +
@@ -62,10 +59,10 @@ public class sqlHandler extends SQLiteOpenHelper {
                 COLUMN_FAT + " DECIMAL," +
                 COLUMN_HOUR + " DECIMAL," +
                 COLUMN_GRAMMAR + " DECIMAL," +
-                COLUMN_MENU_NAME + " TEXT" + ")";
+                COLUMN_EDITED + " INTEGER," +
+                COLUMN_MENU_NAME + " TEXT" +")";
 
         db.execSQL(CREATE_FOOD_TABLE);
-        db.execSQL(CREATE_MENU_TABLE);
         db.execSQL(CREATE_FOODS_TABLE);
     }
 
@@ -83,6 +80,7 @@ public class sqlHandler extends SQLiteOpenHelper {
         values.put(COLUMN_FAT, food.getFoodFat());
         values.put(COLUMN_HOUR, food.getFoodHour());
         values.put(COLUMN_GRAMMAR, food.getFoodGrammar());
+        values.put(COLUMN_EDITED,food.getFoodEdit());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABLE_FOOD, null, values);
         db.close();
@@ -96,6 +94,7 @@ public class sqlHandler extends SQLiteOpenHelper {
         values.put(COLUMN_FAT, food.getFoodFat());
         values.put(COLUMN_HOUR, food.getFoodHour());
         values.put(COLUMN_GRAMMAR, food.getFoodGrammar());
+        values.put(COLUMN_EDITED,food.getFoodEdit());
         values.put(COLUMN_MENU_NAME,menu_name);
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert("Foods", null, values);
@@ -103,16 +102,8 @@ public class sqlHandler extends SQLiteOpenHelper {
     }
 
     public void addMenu(String name, @NonNull ArrayList<Food> foods) {
-        ContentValues values = new ContentValues();
-        int pos = getSize("Menu");
-        values.put("id",pos);
-        values.put("name",name);
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.insert("Menu",null,values);
-        for(Food f : foods){
+        for(Food f : foods)
             addFood(f,name);
-        }
-        db.close();
     }
 
     public Food findFood(String name) {
@@ -126,7 +117,9 @@ public class sqlHandler extends SQLiteOpenHelper {
                     cursor.getString(1),
                     Double.parseDouble(cursor.getString(2)),
                     Double.parseDouble(cursor.getString(3)),
-                    Double.parseDouble(cursor.getString(4)));
+                    Double.parseDouble(cursor.getString(4)),
+                    Double.parseDouble(cursor.getString(5)),
+                    Integer.parseInt(cursor.getString(6)));
         return null;
     }
 
@@ -162,7 +155,9 @@ public class sqlHandler extends SQLiteOpenHelper {
                     cursor.getString(1),
                     Double.parseDouble(cursor.getString(2)),
                     Double.parseDouble(cursor.getString(3)),
-                    Double.parseDouble(cursor.getString(4))));
+                    Double.parseDouble(cursor.getString(4)),
+                    Double.parseDouble(cursor.getString(5)),
+                    Integer.parseInt(cursor.getString(6))));
             cursor.moveToNext();
             size--;
         }
@@ -182,13 +177,14 @@ public class sqlHandler extends SQLiteOpenHelper {
         try {
             String menu = cursor.getString(6);
             while (size >= 0) {
-                if (menu.equals(cursor.getString(6))) {
+                if (menu.equals(cursor.getString(7))) {
                     arrayList.add(new Food(Integer.parseInt(cursor.getString(0)),
                             cursor.getString(1),
                             Double.parseDouble(cursor.getString(2)),
                             Double.parseDouble(cursor.getString(3)),
                             Double.parseDouble(cursor.getString(4)),
-                            Double.parseDouble(cursor.getString(5))));
+                            Double.parseDouble(cursor.getString(5)),
+                            Integer.parseInt(cursor.getString(6))));
                     cursor.moveToNext();
                     size--;
                 } else {
@@ -198,6 +194,7 @@ public class sqlHandler extends SQLiteOpenHelper {
                 }
             }
             temp.put(menu, arrayList);
+            System.out.println(menu);
             cursor.close();
         } catch (Exception ignored) {}
         return temp ;
@@ -223,7 +220,7 @@ public class sqlHandler extends SQLiteOpenHelper {
             int k = 0;
             while (insertReader.ready()) {
                 String[] line = insertReader.readLine().split("/");
-                addFood(new Food(k, line[0], Double.parseDouble(line[1]), Double.parseDouble(line[2]), Double.parseDouble(line[3])));
+                addFood(new Food(k, line[0], Double.parseDouble(line[1]), Double.parseDouble(line[2]), Double.parseDouble(line[3]), 100,0));
                 k++;
             }
         } catch (IOException e) {
@@ -249,7 +246,7 @@ public class sqlHandler extends SQLiteOpenHelper {
                     }
                     else {
                         String[] line = temp.split("/");
-                        foods.add(new Food(Integer.parseInt(line[0]), line[1], Double.parseDouble(line[2]), Double.parseDouble(line[3]), Double.parseDouble(line[4]), Double.parseDouble(line[5])));
+                        foods.add(new Food(Integer.parseInt(line[0]), line[1], Double.parseDouble(line[2]), Double.parseDouble(line[3]), Double.parseDouble(line[4]), Double.parseDouble(line[5]),0));
                     }
                 }
                 if(pos==2) {

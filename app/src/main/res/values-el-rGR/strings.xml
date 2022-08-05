@@ -41,4 +41,5 @@
     <string name="cancel">Άκυρο</string>
     <string name="menuAlreadyExists">Το Μενού Υπάρχει Ήδη</string>
     <string name="menuAdded">Το Μενού Προστέθηκε Στα Αγαπημένα</string>
+    <string name="description">Περιγραφή</string>
 </resources>

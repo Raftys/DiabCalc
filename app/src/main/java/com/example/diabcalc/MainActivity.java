@@ -46,9 +46,8 @@ public class MainActivity extends AppCompatActivity {
         foods = getIntent().getParcelableArrayListExtra("foods");
 
         ArrayList<String> arrayList = new ArrayList<>();
-        for (Food food : foods) {
+        for (Food food : foods)
             arrayList.add(food.getFoodName());
-        }
 
         adapter = new ArrayAdapter<>(
                 MainActivity.this,

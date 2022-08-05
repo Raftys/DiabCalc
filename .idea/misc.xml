@@ -8,7 +8,7 @@
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout-land/activity_main_page.xml" value="0.4070115433946131" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout-land/activity_main_page2.xml" value="0.4070115433946131" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout-land/activity_third.xml" value="0.4648648648648649" />
-        <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_add.xml" value="0.18854166666666666" />
+        <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_add.xml" value="0.1" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_delete.xml" value="0.19791666666666666" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_favorite.xml" value="0.25" />
         <entry key="..\:/Marios/Coding/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_main.xml" value="0.2574074074074074" />
@@ -37,5 +37,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.1" />
+      </ProjectState>
+    </option>
   </component>
 </project>

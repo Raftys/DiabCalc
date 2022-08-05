@@ -14,23 +14,17 @@ public class Food implements Parcelable {
     private double fat;
     private final double hour;
     private double grammar;
+    private final int edit;
 
-    public Food(int id, String name, double car, double fat, double hour) {
-        this.id = id;
-        this.name = name;
-        this.car = car;
-        this.fat = fat;
-        this.hour = hour;
-        this.grammar = 100;
-    }
 
-    public Food(int id, String name, double car, double fat, double hour, double grammar) {
+    public Food(int id, String name, double car, double fat, double hour, double grammar, int edit) {
         this.id = id;
         this.name = name;
         this.car = car;
         this.fat = fat;
         this.hour = hour;
         this.grammar = grammar;
+        this.edit = edit;
     }
 
     public void calculate() {
@@ -45,6 +39,7 @@ public class Food implements Parcelable {
         fat = in.readDouble();
         grammar = in.readDouble();
         hour = in.readDouble();
+        edit = in.readInt();
     }
 
     public static final Creator<Food> CREATOR = new Creator<Food>() {
@@ -83,6 +78,10 @@ public class Food implements Parcelable {
         return this.grammar;
     }
 
+    public int getFoodEdit() {
+        return this.edit;
+    }
+
     public void setFoodGrammar(double grammar) {
         this.grammar = grammar;
     }
@@ -100,5 +99,6 @@ public class Food implements Parcelable {
         parcel.writeDouble(fat);
         parcel.writeDouble(grammar);
         parcel.writeDouble(hour);
+        parcel.writeInt(edit);
     }
 }

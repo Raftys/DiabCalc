@@ -49,7 +49,9 @@ public class AddActivity extends AppCompatActivity {
                             name.getText().toString().trim().substring(0, 1).toUpperCase() + name.getText().toString().trim().substring(1),
                             Double.parseDouble(carbohydrates.getText().toString()),
                             Double.parseDouble(fat.getText().toString()),
-                            Double.parseDouble(hour.getText().toString())));
+                            Double.parseDouble(hour.getText().toString()),
+                            100,
+                            1));
                     Toast.makeText(AddActivity.this, getResources().getString(R.string.foodAdded), Toast.LENGTH_SHORT).show();
                 }
             } else {

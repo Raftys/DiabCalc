@@ -10,12 +10,12 @@
         android:id="@+id/name"
         android:layout_width="190dp"
         android:layout_height="56dp"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginStart="92dp"
         android:hint="@string/name"
         android:importantForAutofill="no"
         android:inputType="text"
         android:textColorHint="#757575"
+        app:layout_constraintBottom_toTopOf="@+id/description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,11 +23,14 @@
         android:id="@+id/carbohydrates"
         android:layout_width="190dp"
         android:layout_height="55dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="96dp"
+        android:layout_marginBottom="32dp"
+        android:hint="@string/carbohydrates"
         android:importantForAutofill="no"
         android:inputType="numberDecimal"
         android:textColorHint="#757575"
+        app:layout_constraintBottom_toTopOf="@+id/fat"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,32 +38,50 @@
         android:id="@+id/fat"
         android:layout_width="190dp"
         android:layout_height="56dp"
-        android:layout_marginStart="96dp"
-        android:layout_marginBottom="120dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="96dp"
+        android:hint="@string/fat"
         android:importantForAutofill="no"
         android:inputType="numberDecimal"
         android:textColorHint="#757575"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/hour"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/hour"
         android:layout_width="190dp"
         android:layout_height="56dp"
+        android:layout_marginTop="120dp"
         android:layout_marginEnd="96dp"
-        android:layout_marginBottom="120dp"
         android:hint="@string/hour"
         android:importantForAutofill="no"
         android:inputType="numberDecimal"
         android:textColorHint="#757575"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/description"
+        android:layout_width="190dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginBottom="32dp"
+        android:hint="@string/description"
+        android:importantForAutofill="no"
+        android:inputType="numberDecimal"
+        android:textColorHint="#757575"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/addFoodToDB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/add"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
