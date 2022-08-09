@@ -33,6 +33,8 @@ public class AddActivity extends AppCompatActivity {
         fat.setHint(getResources().getString(R.string.fat) + " (100)");
         carbohydrates.setHint(getResources().getString(R.string.carbohydrates) +" (100)");
 
+        String category="category";
+
         Button add = findViewById(R.id.addFoodToDB);
 
         add.setOnClickListener(view -> {
@@ -47,6 +49,7 @@ public class AddActivity extends AppCompatActivity {
                     int k = generateId(sqlHandler);
                     sqlHandler.addFood(new Food(k,
                             name.getText().toString().trim().substring(0, 1).toUpperCase() + name.getText().toString().trim().substring(1),
+                            category,
                             Double.parseDouble(carbohydrates.getText().toString()),
                             Double.parseDouble(fat.getText().toString()),
                             Double.parseDouble(hour.getText().toString()),

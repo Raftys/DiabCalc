@@ -29,6 +29,16 @@
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_add.xml" value="0.358695652173913" />
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_main_page.xml" value="0.25" />
         <entry key="..\:/Users/Rafty/AndroidStudioProjects/DiabCalc/app/src/main/res/layout/activity_third.xml" value="0.12228260869565218" />
+        <entry key="app/src/main/res/layout-land/activity_add.xml" value="0.33" />
+        <entry key="app/src/main/res/layout-land/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout-land/activity_second.xml" value="0.1828125" />
+        <entry key="app/src/main/res/layout/activity_add.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_delete.xml" value="0.2930253623188406" />
+        <entry key="app/src/main/res/layout/activity_favorite.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.17097264437689969" />
+        <entry key="app/src/main/res/layout/activity_main_page.xml" value="0.17097264437689969" />
+        <entry key="app/src/main/res/layout/activity_second.xml" value="0.17097264437689969" />
+        <entry key="app/src/main/res/layout/activity_third.xml" value="0.17097264437689969" />
       </map>
     </option>
   </component>

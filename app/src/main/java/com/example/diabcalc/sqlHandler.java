@@ -18,19 +18,20 @@ import java.util.HashMap;
 public class sqlHandler extends SQLiteOpenHelper {
 
     private static int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "data.db";
+    private static final String DATABASE_NAME = "data";
     public static final String TABLE_FOOD = "Food";
-    public static final String TABLE_FOODS = "Foods";
+    public static final String TABLE_MENU = "Menu";
     public static final String COLUMN_ID = "id";
-    public static final String COLUMN_MENU_NAME = "Menu_name";
-    public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_MENU_NAME = "menu_name";
+    public static final String COLUMN_NAME = "food_name";
+    public static final String COLUMN_CATEGORY = "category";
     public static final String COLUMN_CAR = "car";
     public static final String COLUMN_FAT = "fat";
     public static final String COLUMN_HOUR = "hour";
     public static final String COLUMN_GRAMMAR = "grammar";
     /*0 = Default
      * 1 = Edited*/
-    public static final String COLUMN_EDITED = "edit";
+    public static final String COLUMN_EDITED = "edited";
     private final Context context;
 
     public sqlHandler(@Nullable Context context, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
@@ -40,31 +41,7 @@ public class sqlHandler extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
-        String CREATE_FOOD_TABLE = "CREATE TABLE " +
-                TABLE_FOOD + "(" +
-                COLUMN_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_NAME + " TEXT UNIQUE," +
-                COLUMN_CAR + " DECIMAL," +
-                COLUMN_FAT + " DECIMAL," +
-                COLUMN_HOUR + " DECIMAL," +
-                COLUMN_GRAMMAR + " DECIMAL, "  +
-                COLUMN_EDITED + " INTEGER" + ")";
-
-        String CREATE_FOODS_TABLE = "CREATE TABLE " +
-                TABLE_FOODS  + "(" +
-                COLUMN_ID + " INTEGER," +
-                COLUMN_NAME + " TEXT," +
-                COLUMN_CAR + " DECIMAL," +
-                COLUMN_FAT + " DECIMAL," +
-                COLUMN_HOUR + " DECIMAL," +
-                COLUMN_GRAMMAR + " DECIMAL," +
-                COLUMN_EDITED + " INTEGER," +
-                COLUMN_MENU_NAME + " TEXT" +")";
-
-        db.execSQL(CREATE_FOOD_TABLE);
-        db.execSQL(CREATE_FOODS_TABLE);
-    }
+    public void onCreate(SQLiteDatabase db) {}
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
@@ -72,10 +49,12 @@ public class sqlHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+
     public void addFood(@NonNull Food food) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, food.getFoodId());
         values.put(COLUMN_NAME, food.getFoodName());
+        values.put(COLUMN_CATEGORY,food.getFoodCategory());
         values.put(COLUMN_CAR, food.getFoodCar());
         values.put(COLUMN_FAT, food.getFoodFat());
         values.put(COLUMN_HOUR, food.getFoodHour());
@@ -86,24 +65,19 @@ public class sqlHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void addFood(@NonNull Food food, String menu_name) {
+    public void addFood(String food_name, double grammar, String menu_name) {
         ContentValues values = new ContentValues();
-        values.put(COLUMN_ID, food.getFoodId());
-        values.put(COLUMN_NAME, food.getFoodName());
-        values.put(COLUMN_CAR, food.getFoodCar());
-        values.put(COLUMN_FAT, food.getFoodFat());
-        values.put(COLUMN_HOUR, food.getFoodHour());
-        values.put(COLUMN_GRAMMAR, food.getFoodGrammar());
-        values.put(COLUMN_EDITED,food.getFoodEdit());
+        values.put(COLUMN_NAME,food_name);
+        values.put(COLUMN_GRAMMAR,grammar);
         values.put(COLUMN_MENU_NAME,menu_name);
         SQLiteDatabase db = this.getWritableDatabase();
-        db.insert("Foods", null, values);
+        db.insert(TABLE_MENU, null, values);
         db.close();
     }
 
-    public void addMenu(String name, @NonNull ArrayList<Food> foods) {
-        for(Food f : foods)
-            addFood(f,name);
+    public void addMenu(@NonNull ArrayList<Food> foods, String menu_name) {
+        for(Food food : foods)
+            addFood(food.getFoodName(), food.getFoodGrammar(), menu_name);
     }
 
     public Food findFood(String name) {
@@ -115,19 +89,20 @@ public class sqlHandler extends SQLiteOpenHelper {
         if (cursor.getCount() != 0)
             return new Food(Integer.parseInt(cursor.getString(0)),
                     cursor.getString(1),
-                    Double.parseDouble(cursor.getString(2)),
+                    cursor.getString(2),
                     Double.parseDouble(cursor.getString(3)),
                     Double.parseDouble(cursor.getString(4)),
                     Double.parseDouble(cursor.getString(5)),
-                    Integer.parseInt(cursor.getString(6)));
+                    Double.parseDouble(cursor.getString(6)),
+                    Integer.parseInt(cursor.getString(7)));
         return null;
     }
 
-    public boolean deleteFood(String name, String table_name) {
+    public boolean deleteFood(String name) {
         Food food = findFood(name);
         if (food != null) {
             SQLiteDatabase db = this.getWritableDatabase();
-            db.delete(table_name, COLUMN_NAME + " = ?",
+            db.delete(TABLE_FOOD, COLUMN_NAME + " = ?",
                     new String[]{String.valueOf(food.getFoodName())});
             db.close();
             return true;
@@ -138,7 +113,7 @@ public class sqlHandler extends SQLiteOpenHelper {
 
     public void deleteMenu(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_FOODS,COLUMN_MENU_NAME + " = ?", new String[]{name});
+        db.delete(TABLE_MENU,COLUMN_MENU_NAME + " = ?", new String[]{name});
     }
 
     public ArrayList<Food> getAll() {
@@ -153,11 +128,12 @@ public class sqlHandler extends SQLiteOpenHelper {
         while (size >= 0) {
             arrayList.add(new Food(Integer.parseInt(cursor.getString(0)),
                     cursor.getString(1),
-                    Double.parseDouble(cursor.getString(2)),
+                    cursor.getString(2),
                     Double.parseDouble(cursor.getString(3)),
                     Double.parseDouble(cursor.getString(4)),
                     Double.parseDouble(cursor.getString(5)),
-                    Integer.parseInt(cursor.getString(6))));
+                    Double.parseDouble(cursor.getString(6)),
+                    Integer.parseInt(cursor.getString(7))));
             cursor.moveToNext();
             size--;
         }
@@ -166,7 +142,7 @@ public class sqlHandler extends SQLiteOpenHelper {
     }
 
     public HashMap<String,ArrayList<Food>> getMenu() {
-        String query = "Select * FROM " + TABLE_FOODS + " ORDER BY " + COLUMN_MENU_NAME;
+        String query = "Select * FROM " + TABLE_MENU + " ORDER BY " + COLUMN_MENU_NAME;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
@@ -175,22 +151,19 @@ public class sqlHandler extends SQLiteOpenHelper {
         HashMap<String,ArrayList<Food>> temp = new HashMap<>();
         ArrayList<Food> arrayList = new ArrayList<>();
         try {
-            String menu = cursor.getString(6);
+            String menu = cursor.getString(2);
             while (size >= 0) {
-                if (menu.equals(cursor.getString(7))) {
-                    arrayList.add(new Food(Integer.parseInt(cursor.getString(0)),
-                            cursor.getString(1),
-                            Double.parseDouble(cursor.getString(2)),
-                            Double.parseDouble(cursor.getString(3)),
-                            Double.parseDouble(cursor.getString(4)),
-                            Double.parseDouble(cursor.getString(5)),
-                            Integer.parseInt(cursor.getString(6))));
+                if (menu.equals(cursor.getString(2))) {
+                    Food f = findFood(cursor.getString(0));
+                    f.setFoodGrammar(Double.parseDouble(cursor.getString(1)));
+                    f.calculate();
+                    arrayList.add(f);
                     cursor.moveToNext();
                     size--;
                 } else {
                     temp.put(menu, arrayList);
                     arrayList = new ArrayList<>();
-                    menu = cursor.getString(6);
+                    menu = cursor.getString(2);
                 }
             }
             temp.put(menu, arrayList);
@@ -207,53 +180,20 @@ public class sqlHandler extends SQLiteOpenHelper {
         return db.rawQuery(query, null).getCount();
     }
 
-
-    /**
-     * διαβάζει από ένα αρχείο τιμές για κάποια φαγητά, ώστε να προσθεθούν στη λίστα
-     * το αρχείο είναι της μορφής, name/car/fat/hour, για ευνόητους λόγους.
-     */
-    public void insertFromFile() {
+    public void importDatabase() {
+        this.getReadableDatabase();
         try {
+            OutputStream myOutput = new FileOutputStream("data/data/com.example.diabcalc/databases/" + DATABASE_NAME);
             assert this.context != null;
-            InputStream inputStream = this.context.getAssets().open("food.txt");
-            BufferedReader insertReader = new BufferedReader(new InputStreamReader(inputStream));
-            int k = 0;
-            while (insertReader.ready()) {
-                String[] line = insertReader.readLine().split("/");
-                addFood(new Food(k, line[0], Double.parseDouble(line[1]), Double.parseDouble(line[2]), Double.parseDouble(line[3]), 100,0));
-                k++;
+            InputStream myInput = this.context.getAssets().open("temp.db");
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = myInput.read(buffer)) > 0) {
+                myOutput.write(buffer, 0, length);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            InputStream inputStream = this.context.getAssets().open("favorites.txt");
-            BufferedReader insertReader = new BufferedReader(new InputStreamReader(inputStream));
-            int pos = 0;
-            String menu_name = "";
-            ArrayList<Food> foods = new ArrayList<>();
-            while (insertReader.ready()) {
-                if(pos==0) {
-                    menu_name = insertReader.readLine();
-                    foods = new ArrayList<>();
-                    pos = 1;
-                }
-                else {
-                    String temp = insertReader.readLine();
-                    if(temp.equals("------")) {
-                        pos = 2;
-                    }
-                    else {
-                        String[] line = temp.split("/");
-                        foods.add(new Food(Integer.parseInt(line[0]), line[1], Double.parseDouble(line[2]), Double.parseDouble(line[3]), Double.parseDouble(line[4]), Double.parseDouble(line[5]),0));
-                    }
-                }
-                if(pos==2) {
-                    addMenu(menu_name,foods);
-                    pos = 0;
-                }
-            }
+            myInput.close();
+            myOutput.flush();
+            myOutput.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

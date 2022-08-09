@@ -161,7 +161,7 @@ public class ThirdActivity extends AppCompatActivity {
                     if(hashMap.containsKey(menu_name))
                         Toast.makeText(this, getResources().getString(R.string.menuAlreadyExists), Toast.LENGTH_SHORT).show();
                     else {
-                        sqlHandler.addMenu(menu_name, finalFoods);
+                        sqlHandler.addMenu(finalFoods,menu_name);
                         item.setIcon(android.R.drawable.star_big_on);
                         item.setChecked(true);
                         Toast.makeText(this, getResources().getString(R.string.menuAdded), Toast.LENGTH_SHORT).show();

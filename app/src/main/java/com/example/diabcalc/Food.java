@@ -10,6 +10,7 @@ import android.os.Parcelable;
 public class Food implements Parcelable {
     private final int id;
     private final String name;
+    private final String category;
     private double car;
     private double fat;
     private final double hour;
@@ -17,7 +18,7 @@ public class Food implements Parcelable {
     private final int edit;
 
 
-    public Food(int id, String name, double car, double fat, double hour, double grammar, int edit) {
+    public Food(int id, String name, String category, double car, double fat, double hour, double grammar, int edit) {
         this.id = id;
         this.name = name;
         this.car = car;
@@ -25,6 +26,7 @@ public class Food implements Parcelable {
         this.hour = hour;
         this.grammar = grammar;
         this.edit = edit;
+        this.category=category;
     }
 
     public void calculate() {
@@ -35,6 +37,7 @@ public class Food implements Parcelable {
     protected Food(Parcel in) {
         id = in.readInt();
         name = in.readString();
+        category = in.readString();
         car = in.readDouble();
         fat = in.readDouble();
         grammar = in.readDouble();
@@ -60,6 +63,10 @@ public class Food implements Parcelable {
 
     public String getFoodName() {
         return this.name;
+    }
+
+    public String getFoodCategory() {
+        return this.category;
     }
 
     public double getFoodCar() {
@@ -95,6 +102,7 @@ public class Food implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(id);
         parcel.writeString(name);
+        parcel.writeString(category);
         parcel.writeDouble(car);
         parcel.writeDouble(fat);
         parcel.writeDouble(grammar);
