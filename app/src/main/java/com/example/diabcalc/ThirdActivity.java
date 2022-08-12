@@ -56,6 +56,7 @@ public class ThirdActivity extends AppCompatActivity {
         ArrayList<String> list = new ArrayList<>();
         for (Food f : finalFoods)
             list.add(getResources().getString(R.string.name) + ": " + f.getFoodName() +
+                    "\n" + getResources().getString(R.string.category) + ": " + f.getFoodCategory() +
                     "\n" + getResources().getString(R.string.grammars) + ": " + String.format("%.2f", f.getFoodGrammar()) +
                     "\n" + getResources().getString(R.string.carbohydrates) + ": " + String.format("%.2f", f.getFoodCar()) +
                     "\n" + getResources().getString(R.string.fat) + ": " + String.format("%.2f", f.getFoodFat()) +

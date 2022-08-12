@@ -70,7 +70,6 @@ public class DeleteActivity extends AppCompatActivity {
                                     android.R.layout.simple_list_item_1,
                                     arrayList
                             );
-                            foods_list = findViewById(R.id.list_to_delete);
                             foods_list.setAdapter(adapter);
                         } else
                             Toast.makeText(DeleteActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();

@@ -44,8 +44,6 @@ public class MainPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
 
-        sqlHandler sqlHandler = new sqlHandler( this,null,1);
-        sqlHandler.importDatabase();
         getFoods();
 
         Button start = findViewById(R.id.start);
@@ -121,6 +119,8 @@ public class MainPage extends AppCompatActivity {
 
     private void getFoods() {
         sqlHandler sqlHandler = new sqlHandler(this, null, 1);
+        if(!getDatabasePath("data").exists())
+            sqlHandler.importDatabase();
         foods = new ArrayList<>();
         foods = sqlHandler.getAll();
     }

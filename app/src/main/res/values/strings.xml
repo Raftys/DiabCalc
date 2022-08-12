@@ -41,5 +41,9 @@
     <string name="menuAlreadyExists">Menu Name Already Exists</string>
     <string name="menuAdded">Menu Added To Favorites</string>
     <string name="description">Description</string>
+    <string name="category">Category</string>
+    <string name="categoryAdd">This Category Doesn\'t Exist. Do you want to add it?</string>
+    <string name="info_info">INFO,info</string>
+    <string name="noDescription">No Description</string>
 
 </resources>

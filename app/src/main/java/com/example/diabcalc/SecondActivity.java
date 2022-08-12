@@ -1,7 +1,9 @@
 package com.example.diabcalc;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.text.Html;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,11 +21,11 @@ import java.util.ArrayList;
  */
 public class SecondActivity extends AppCompatActivity {
 
-    TextView textView;
     EditText editText;
     Intent intent;
     ArrayList<Food> finalFoods;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,9 +35,18 @@ public class SecondActivity extends AppCompatActivity {
         finalFoods = intent.getParcelableArrayListExtra("list");
         Food food = intent.getParcelableExtra("info");
 
-        textView = findViewById(R.id.textView);
-        textView.setText(food.getFoodName());
+        TextView info = findViewById(R.id.info);
 
+        String info_line;
+        if(food.getFoodDescription() == null)
+            info_line = "<b>" + getResources().getString(R.string.name) + ": </b> " +food.getFoodName() +
+                    "<br><b>" + getResources().getString(R.string.category) + ": </b> " + food.getFoodCategory() +
+                    "<br><b>" + getResources().getString(R.string.description) + ": </b> " + getResources().getString(R.string.noDescription);
+        else
+            info_line = "<b>" + getResources().getString(R.string.name) + ": </b> " + food.getFoodName() +
+                    "<br><b>" + getResources().getString(R.string.category) + ": </b> " + food.getFoodCategory() +
+                    "<br><b>" + getResources().getString(R.string.description) + ": </b> " + food.getFoodDescription();
+        info.setText(Html.fromHtml(info_line));
 
         Button button_next, button_back;
 

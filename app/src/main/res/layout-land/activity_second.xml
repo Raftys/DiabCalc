@@ -7,47 +7,42 @@
     tools:context=".SecondActivity">
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="220dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginLeft="72dp"
-        android:layout_marginBottom="112dp"
+        android:id="@+id/info"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
         android:fontFamily="sans-serif-medium"
-        android:gravity="center_horizontal"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:gravity="start"
+        android:background="@drawable/corner"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintBottom_toTopOf="@+id/grammars"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/back3" />
+
 
     <EditText
         android:id="@+id/grammars"
         android:layout_width="190dp"
         android:layout_height="56dp"
-        android:layout_marginStart="88dp"
-        android:layout_marginLeft="88dp"
-        android:layout_marginBottom="72dp"
         android:hint="@string/grammars"
         android:importantForAutofill="no"
         android:inputType="numberDecimal"
-        android:textColor="#757575"
+        android:textColor="@color/gray"
+        android:textColorHint="@color/gray"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/back3"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/info"
         tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="56dp"
-        android:layout_marginRight="56dp"
         android:text="@string/next"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/back3"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints,TextContrastCheck" />
 
@@ -55,14 +50,11 @@
         android:id="@+id/back3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="240dp"
-        android:layout_marginLeft="240dp"
-        android:layout_marginTop="32dp"
         android:text="@string/back"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/next"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/grammars"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="TextContrastCheck" />
 

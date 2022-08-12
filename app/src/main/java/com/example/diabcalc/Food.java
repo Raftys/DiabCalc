@@ -10,7 +10,8 @@ import android.os.Parcelable;
 public class Food implements Parcelable {
     private final int id;
     private final String name;
-    private final String category;
+    private String category;
+    private String description;
     private double car;
     private double fat;
     private final double hour;
@@ -18,7 +19,7 @@ public class Food implements Parcelable {
     private final int edit;
 
 
-    public Food(int id, String name, String category, double car, double fat, double hour, double grammar, int edit) {
+    public Food(int id, String name, String category, String description, double car, double fat, double hour, double grammar, int edit) {
         this.id = id;
         this.name = name;
         this.car = car;
@@ -27,6 +28,7 @@ public class Food implements Parcelable {
         this.grammar = grammar;
         this.edit = edit;
         this.category=category;
+        this.description = description;
     }
 
     public void calculate() {
@@ -38,6 +40,7 @@ public class Food implements Parcelable {
         id = in.readInt();
         name = in.readString();
         category = in.readString();
+        description = in.readString();
         car = in.readDouble();
         fat = in.readDouble();
         grammar = in.readDouble();
@@ -69,6 +72,10 @@ public class Food implements Parcelable {
         return this.category;
     }
 
+    public String getFoodDescription() {
+        return this.description;
+    }
+
     public double getFoodCar() {
         return this.car;
     }
@@ -93,6 +100,11 @@ public class Food implements Parcelable {
         this.grammar = grammar;
     }
 
+    public void setFoodCategory(String category) {
+        this.category = category;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -103,6 +115,7 @@ public class Food implements Parcelable {
         parcel.writeInt(id);
         parcel.writeString(name);
         parcel.writeString(category);
+        parcel.writeString(description);
         parcel.writeDouble(car);
         parcel.writeDouble(fat);
         parcel.writeDouble(grammar);

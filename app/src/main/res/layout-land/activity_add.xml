@@ -14,27 +14,58 @@
         android:importantForAutofill="no"
         android:inputType="text"
         android:textColorHint="#757575"
-        app:layout_constraintBottom_toTopOf="@+id/description"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.186"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.568" />
+        app:layout_constraintBottom_toTopOf="@+id/category_menu"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/carbohydrates" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/category_menu"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+        android:layout_width="190dp"
+        android:layout_height="56dp"
+        android:hint="@string/category"
+        app:layout_constraintTop_toBottomOf="@+id/name"
+        app:layout_constraintBottom_toTopOf="@+id/description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/fat">
+
+        <AutoCompleteTextView
+            android:id="@+id/autoTextview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="text"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="249dp" />
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <EditText
+        android:id="@+id/description"
+        android:layout_width="190dp"
+        android:layout_height="56dp"
+        android:hint="@string/description"
+        android:inputType="text"
+        android:textColorHint="#757575"
+        app:layout_constraintTop_toBottomOf="@+id/category_menu"
+        app:layout_constraintBottom_toTopOf="@+id/addFoodToDB"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/hour"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/carbohydrates"
         android:layout_width="190dp"
-        android:layout_height="55dp"
+        android:layout_height="56dp"
         android:hint="@string/carbohydrates"
         android:importantForAutofill="no"
         android:inputType="numberDecimal"
         android:textColorHint="#757575"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.805"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.151" />
+        app:layout_constraintBottom_toTopOf="@+id/fat"
+        app:layout_constraintStart_toEndOf="@+id/name"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
         android:id="@+id/fat"
@@ -44,12 +75,10 @@
         android:importantForAutofill="no"
         android:inputType="numberDecimal"
         android:textColorHint="#757575"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.805"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.44" />
+        app:layout_constraintTop_toBottomOf="@+id/carbohydrates"
+        app:layout_constraintBottom_toTopOf="@+id/hour"
+        app:layout_constraintStart_toEndOf="@+id/category_menu"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <EditText
         android:id="@+id/hour"
@@ -59,40 +88,23 @@
         android:importantForAutofill="no"
         android:inputType="numberDecimal"
         android:textColorHint="#757575"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.805"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.727" />
+        app:layout_constraintTop_toBottomOf="@+id/fat"
+        app:layout_constraintBottom_toTopOf="@+id/addFoodToDB"
+        app:layout_constraintStart_toEndOf="@+id/description"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <EditText
-        android:id="@+id/description"
-        android:layout_width="190dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="120dp"
-        android:layout_marginBottom="32dp"
-        android:hint="@string/description"
-        android:importantForAutofill="no"
-        android:inputType="numberDecimal"
-        android:textColorHint="#757575"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.186"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.463" />
 
     <Button
         android:id="@+id/addFoodToDB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:text="@string/add"
         android:textColor="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@+id/hour"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="TextContrastCheck" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

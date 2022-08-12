@@ -25,6 +25,7 @@ public class sqlHandler extends SQLiteOpenHelper {
     public static final String COLUMN_MENU_NAME = "menu_name";
     public static final String COLUMN_NAME = "food_name";
     public static final String COLUMN_CATEGORY = "category";
+    public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_CAR = "car";
     public static final String COLUMN_FAT = "fat";
     public static final String COLUMN_HOUR = "hour";
@@ -49,12 +50,13 @@ public class sqlHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-
+    /**Add**/
     public void addFood(@NonNull Food food) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, food.getFoodId());
         values.put(COLUMN_NAME, food.getFoodName());
         values.put(COLUMN_CATEGORY,food.getFoodCategory());
+        values.put(COLUMN_DESCRIPTION,food.getFoodDescription());
         values.put(COLUMN_CAR, food.getFoodCar());
         values.put(COLUMN_FAT, food.getFoodFat());
         values.put(COLUMN_HOUR, food.getFoodHour());
@@ -80,42 +82,7 @@ public class sqlHandler extends SQLiteOpenHelper {
             addFood(food.getFoodName(), food.getFoodGrammar(), menu_name);
     }
 
-    public Food findFood(String name) {
-        String query = "SELECT * FROM " + TABLE_FOOD + " WHERE " +
-                COLUMN_NAME + " = '" + name + "'";
-        SQLiteDatabase db = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = db.rawQuery(query, null);
-        cursor.moveToFirst();
-        if (cursor.getCount() != 0)
-            return new Food(Integer.parseInt(cursor.getString(0)),
-                    cursor.getString(1),
-                    cursor.getString(2),
-                    Double.parseDouble(cursor.getString(3)),
-                    Double.parseDouble(cursor.getString(4)),
-                    Double.parseDouble(cursor.getString(5)),
-                    Double.parseDouble(cursor.getString(6)),
-                    Integer.parseInt(cursor.getString(7)));
-        return null;
-    }
-
-    public boolean deleteFood(String name) {
-        Food food = findFood(name);
-        if (food != null) {
-            SQLiteDatabase db = this.getWritableDatabase();
-            db.delete(TABLE_FOOD, COLUMN_NAME + " = ?",
-                    new String[]{String.valueOf(food.getFoodName())});
-            db.close();
-            return true;
-        }
-        return false;
-
-    }
-
-    public void deleteMenu(String name) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_MENU,COLUMN_MENU_NAME + " = ?", new String[]{name});
-    }
-
+    /**Getters**/
     public ArrayList<Food> getAll() {
         String query = "Select * FROM " + TABLE_FOOD;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -129,11 +96,12 @@ public class sqlHandler extends SQLiteOpenHelper {
             arrayList.add(new Food(Integer.parseInt(cursor.getString(0)),
                     cursor.getString(1),
                     cursor.getString(2),
-                    Double.parseDouble(cursor.getString(3)),
+                    cursor.getString(3),
                     Double.parseDouble(cursor.getString(4)),
                     Double.parseDouble(cursor.getString(5)),
                     Double.parseDouble(cursor.getString(6)),
-                    Integer.parseInt(cursor.getString(7))));
+                    Double.parseDouble(cursor.getString(7)),
+                    Integer.parseInt(cursor.getString(8))));
             cursor.moveToNext();
             size--;
         }
@@ -173,6 +141,25 @@ public class sqlHandler extends SQLiteOpenHelper {
         return temp ;
     }
 
+    public ArrayList<String> getCategories() {
+        String query = "Select * FROM " + TABLE_FOOD + " ORDER BY " + COLUMN_CATEGORY;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        int size = cursor.getCount() - 1;
+        cursor.moveToFirst();
+        ArrayList<String> arrayList = new ArrayList<>();
+        try {
+            while (size >= 0) {
+                if (cursor.getString(2)!=null)
+                    arrayList.add(cursor.getString(2));
+                cursor.moveToNext();
+                size--;
+            }
+            cursor.close();
+        } catch (Exception ignored) {}
+        return arrayList ;
+    }
+
     @SuppressLint("Recycle")
     public int getSize(String table_name) {
         String query = "Select * FROM " + table_name;
@@ -180,6 +167,46 @@ public class sqlHandler extends SQLiteOpenHelper {
         return db.rawQuery(query, null).getCount();
     }
 
+    public Food findFood(String name) {
+        String query = "SELECT * FROM " + TABLE_FOOD + " WHERE " +
+                COLUMN_NAME + " = '" + name + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        @SuppressLint("Recycle") Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        if (cursor.getCount() != 0)
+            return new Food(Integer.parseInt(cursor.getString(0)),
+                    cursor.getString(1),
+                    cursor.getString(2),
+                    cursor.getString(3),
+                    Double.parseDouble(cursor.getString(4)),
+                    Double.parseDouble(cursor.getString(5)),
+                    Double.parseDouble(cursor.getString(6)),
+                    Double.parseDouble(cursor.getString(7)),
+                    Integer.parseInt(cursor.getString(8)));
+        return null;
+    }
+
+    /**Delete**/
+    public boolean deleteFood(String name) {
+        Food food = findFood(name);
+        if (food != null) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.delete(TABLE_FOOD, COLUMN_NAME + " = ?",
+                    new String[]{String.valueOf(food.getFoodName())});
+            db.close();
+            return true;
+        }
+        return false;
+
+    }
+
+    public void deleteMenu(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_MENU,COLUMN_MENU_NAME + " = ?", new String[]{name});
+    }
+
+
+    /**Import DataBase**/
     public void importDatabase() {
         this.getReadableDatabase();
         try {
