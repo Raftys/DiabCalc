@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:ignore="ExtraText"
     >
-
+    
     <item
         android:id="@+id/search_food"
         android:icon="@android:drawable/ic_menu_search"

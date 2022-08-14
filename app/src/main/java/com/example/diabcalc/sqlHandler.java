@@ -150,7 +150,7 @@ public class sqlHandler extends SQLiteOpenHelper {
         ArrayList<String> arrayList = new ArrayList<>();
         try {
             while (size >= 0) {
-                if (cursor.getString(2)!=null)
+                if (cursor.getString(2)!=null && !arrayList.contains(cursor.getString(2)))
                     arrayList.add(cursor.getString(2));
                 cursor.moveToNext();
                 size--;

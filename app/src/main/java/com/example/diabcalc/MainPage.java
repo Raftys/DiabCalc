@@ -126,7 +126,7 @@ public class MainPage extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         menu.setGroupVisible(0,false);
         return super.onCreateOptionsMenu(menu);

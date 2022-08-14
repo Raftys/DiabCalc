@@ -46,4 +46,5 @@
     <string name="categoryAdd">Δεν Υπάρχει Αυτή Η Κατηγορία. Θέλετε Να Την Προσθέσεται;</string>
     <string name="info_info">ΠΛΗΡΟφορίες</string>
     <string name="noDescription">Καμία Πληροφορία</string>
+    <string name="apply">Apply</string>
 </resources>

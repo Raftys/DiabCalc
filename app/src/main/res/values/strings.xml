@@ -45,5 +45,6 @@
     <string name="categoryAdd">This Category Doesn\'t Exist. Do you want to add it?</string>
     <string name="info_info">INFO,info</string>
     <string name="noDescription">No Description</string>
+    <string name="apply">Apply</string>
 
 </resources>

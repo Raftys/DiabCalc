@@ -32,19 +32,29 @@
         <entry key="app/src/main/res/drawable/corner.xml" value="0.252" />
         <entry key="app/src/main/res/layout-land/activity_add.xml" value="0.1" />
         <entry key="app/src/main/res/layout-land/activity_delete.xml" value="0.2976190476190476" />
+        <entry key="app/src/main/res/layout-land/activity_favorite.xml" value="0.15123456790123457" />
         <entry key="app/src/main/res/layout-land/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout-land/activity_second.xml" value="0.18" />
         <entry key="app/src/main/res/layout-land/activity_third.xml" value="0.1828125" />
         <entry key="app/src/main/res/layout/activity_add.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_delete.xml" value="0.2930253623188406" />
         <entry key="app/src/main/res/layout/activity_favorite.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.17097264437689969" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1466438648995297" />
         <entry key="app/src/main/res/layout/activity_main_page.xml" value="0.17097264437689969" />
         <entry key="app/src/main/res/layout/activity_second.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/activity_temp.xml" value="0.20307823856348867" />
         <entry key="app/src/main/res/layout/activity_third.xml" value="0.17097264437689969" />
+        <entry key="app/src/main/res/layout/checkbox.xml" value="0.2877297990594271" />
         <entry key="app/src/main/res/layout/corner_radious.xml" value="0.17760416666666667" />
+        <entry key="app/src/main/res/layout/expandable.xml" value="0.20222317229585293" />
+        <entry key="app/src/main/res/layout/filter.xml" value="0.2877297990594271" />
+        <entry key="app/src/main/res/layout/group_item.xml" value="0.20307823856348867" />
+        <entry key="app/src/main/res/layout/group_name.xml" value="0.2877297990594271" />
         <entry key="app/src/main/res/layout/list_item.xml" value="0.3515625" />
         <entry key="app/src/main/res/layout/one_item.xml" value="0.35052083333333334" />
+        <entry key="app/src/main/res/menu/main_menu.xml" value="0.18" />
+        <entry key="app/src/main/res/menu/search_menu.xml" value="0.15662100456621006" />
+        <entry key="app/src/main/res/menu/sort_search.xml" value="0.20222317229585293" />
       </map>
     </option>
   </component>

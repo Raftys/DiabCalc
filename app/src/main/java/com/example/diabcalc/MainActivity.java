@@ -4,12 +4,15 @@ package com.example.diabcalc;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import android.os.Bundle;
 import android.widget.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Σε αυτό το activity, εμφανίζεται μία λίστα (foods) με όλα τα φαγητά τα οποία υπάρχουν στη βάση
@@ -27,10 +30,23 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Food> foods;
     ArrayList<Food> finalFoods;
 
+    ExpandableListView expandableListView;
+    CustomExpandableListAdapter expandableListAdapter;
+    List<String> expandableListTitle;
+    HashMap<String, List<String>> expandableListDetail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sqlHandler sqlHandler = new sqlHandler(this,null,1);
+        expandableListView = findViewById(R.id.expandedListView);
+        expandableListDetail = getFilter(sqlHandler);
+        expandableListTitle = new ArrayList<>(expandableListDetail.keySet());
+        expandableListAdapter = new CustomExpandableListAdapter(this,expandableListTitle, expandableListDetail);
+        expandableListView.setAdapter(expandableListAdapter);
+
 
         try {
             finalFoods = getIntent().getParcelableArrayListExtra("list");
@@ -56,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         );
         search_foods.setAdapter(adapter);
 
-
         search_foods.setOnItemClickListener((adapterView, view, i, l) -> {
             Intent intent = new Intent(MainActivity.this, SecondActivity.class);
             Food food = null;
@@ -68,6 +83,23 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("info", food);
             intent.putParcelableArrayListExtra("list", finalFoods);
             startActivityForResult(intent, 1);
+        });
+
+        Button apply = findViewById(R.id.apply);
+        apply.setOnClickListener(view -> {
+            ArrayList<String> temp = expandableListAdapter.getChecked();
+            for(Food food : foods) {
+                if(!temp.contains(food.getFoodCategory()))
+                    arrayList.remove(food.getFoodName());
+                else if(temp.contains(food.getFoodCategory()) && !arrayList.contains(food.getFoodName()))
+                    arrayList.add(food.getFoodName());
+            }
+            adapter = new ArrayAdapter<>(
+                    MainActivity.this,
+                    android.R.layout.simple_list_item_1,
+                    arrayList
+            );
+            search_foods.setAdapter(adapter);
         });
 
     }
@@ -88,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.search_menu, menu);
         MenuItem item = menu.findItem(R.id.search_food);
         SearchView searchView = (SearchView) item.getActionView();
@@ -106,5 +138,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public static HashMap<String, List<String>> getFilter(sqlHandler sqlHandler) {
+        HashMap<String, List<String>> expandableListDetail = new HashMap<>();
+
+        List<String> categories = sqlHandler.getCategories();
+
+        List<String> producers = new ArrayList<>();
+        producers.add("temp1");
+        producers.add("temp2");
+        producers.add("temp3");
+        producers.add("temp4");
+
+
+
+        expandableListDetail.put("Categories", categories);
+        expandableListDetail.put("Producer", producers);
+        return expandableListDetail;
     }
 }
