@@ -1,9 +1,13 @@
 package com.example.diabcalc;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import java.util.ArrayList;
@@ -15,14 +19,17 @@ public class FavoriteActivity extends AppCompatActivity {
 
     ListView listview;
     HashMap<String,ArrayList<Food>> favorites;
-    sqlHandler sqlHandler;
+    SqlHandler sqlHandler;
     List<HashMap<String,String>> list;
+    SimpleAdapter adapter;
 
-
+    /**
+     * Ορίζει την λίστα με τα αγαπημένα
+     */
     void setList() {
         favorites = sqlHandler.getMenu();
         list = new ArrayList<>();
-        SimpleAdapter adapter = new SimpleAdapter(this, list,
+        adapter = new SimpleAdapter(this, list,
                 R.layout.list_item,
                 new String[] {"line1","line2"},
                 new int[]  {R.id.text1, R.id.text2});
@@ -42,13 +49,14 @@ public class FavoriteActivity extends AppCompatActivity {
         listview = findViewById(R.id.favorites);
         listview.setAdapter(adapter);
 
+
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite);
-        sqlHandler = new sqlHandler(this, null, 1);
+        sqlHandler = new SqlHandler(this, null, 1);
         setList();
 
         listview.setOnItemClickListener((adapterView, view, i, l) -> {
@@ -57,13 +65,12 @@ public class FavoriteActivity extends AppCompatActivity {
             intent.putParcelableArrayListExtra("list", finalFoods);
             intent.putExtra("favorite",1);
             intent.putExtra("menu_name",list.get(i).get("line1"));
-
             startActivityForResult(intent, 1);
         });
     }
 
 
-    /*
+    /**
     1 -> add
     2 -> new
     else -> back
@@ -87,5 +94,27 @@ public class FavoriteActivity extends AppCompatActivity {
             favorites = new HashMap<>();
             setList();
         }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        getMenuInflater().inflate(R.menu.search_menu, menu);
+        MenuItem item = menu.findItem(R.id.search_food);
+        SearchView searchView = (SearchView) item.getActionView();
+        searchView.setSaveEnabled(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                adapter.getFilter().filter(s);
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 }

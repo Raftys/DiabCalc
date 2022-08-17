@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -89,30 +91,26 @@ public class ThirdActivity extends AppCompatActivity {
                 " "  + getResources().getString(R.string.in) + ": " + finalFoods.get(0).getFoodHour() + " " + getResources().getString(R.string.hour));
 
 
-        /*
-         * κουμπί για επιλογή/προσθήκη φαγητού στο μενού του χρήστη από τη λίστα με όλα τα φαγητά
-         */
-        Button button = findViewById(R.id.addFood);
-        button.setOnClickListener(view -> {
+        /*κουμπί για επιλογή/προσθήκη φαγητού στο μενού του χρήστη από τη λίστα με όλα τα φαγητά**/
+        Button add = findViewById(R.id.addFood);
+        add.setOnClickListener(view -> {
             Intent i = new Intent();
             i.putParcelableArrayListExtra("list", finalFoods);
             setResult(1, i);
             finish();
         });
 
-        /*
-         * καινούργιο μενού
-         */
-        Button button2 = findViewById(R.id.newMenu);
-        button2.setOnClickListener(view -> {
+        /*καινούργιο μενού**/
+        Button newMenu = findViewById(R.id.newMenu);
+        newMenu.setOnClickListener(view -> {
             Intent i = new Intent();
             setResult(2, i);
             finish();
         });
 
-
-        Button button3 = findViewById(R.id.back4);
-        button3.setOnClickListener(view -> {
+        /*Πίσω**/
+        Button back = findViewById(R.id.back);
+        back.setOnClickListener(view -> {
             Intent i = new Intent();
             Food food = finalFoods.get(finalFoods.size() - 1);
             intent.putExtra("info", food);
@@ -123,14 +121,14 @@ public class ThirdActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.third_activity_menu, menu);
         MenuItem item = menu.getItem(0);
         if(bool == 1) {
             item.setIcon(android.R.drawable.star_big_on);
             item.setChecked(true);
         }
-        sqlHandler sqlHandler = new sqlHandler(ThirdActivity.this,null,1);
+        SqlHandler sqlHandler = new SqlHandler(ThirdActivity.this,null,1);
         item.setOnMenuItemClickListener(menuItem -> {
             if(item.isChecked()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);

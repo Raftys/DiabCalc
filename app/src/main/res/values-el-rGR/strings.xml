@@ -10,7 +10,6 @@
     <string name="textview">Κείμενο</string>
     <string name="next">Επόμενο</string>
     <string name="grammars">Γραμμάρια</string>
-    <string name="add3">Προσθήκη</string>
     <string name="start">Εκκίνηση</string>
     <string name="search_food">Αναζήτηση</string>
     <string name="default_image_for_main_page">δεν ξέρω</string>
@@ -20,6 +19,7 @@
     <string name="nav_close">κλοσ</string>
     <string name="favorite">Αγαπημένα</string>
     <string name="add">Προσθήκη</string>
+    <string name="edit">Επεξεργασία</string>
     <string name="text2">DiabCalc</string>
     <string name="new_menu">Καινούργιο</string>
     <string name="sum">Σύνολο</string>
@@ -29,11 +29,12 @@
     <string name="in">σε</string>
     <string name="yes">Ναι</string>
     <string name="no">Όχι</string>
-    <string name="areYouSure">Είστε Σίγουροι;</string>
+    <string name="areYouSure">Είστε Σίγουροι Ότι Θέλετε Να Διαγράψεται Αυτό Το Φαγητό;</string>
     <string name="deleteConfirm">Το Φαγητό Διαγράφηκε</string>
     <string name="error">Σφάλμα</string>
     <string name="foodExists">Το Φαγητό Υπάρχει Ήδη </string>
     <string name="foodAdded">Προστέθηκε</string>
+    <string name="foodEdited">Επεξεργάστηκε</string>
     <string name="notEnoughInformation">Μη Επαρκείς Πληροφορίες</string>
     <string name="menuName">Όνομα Μενού: </string>
     <string name="menuRemoved">Το Μενού Αφαιρέθηκε Από Τα Αγαπημένα</string>
@@ -46,5 +47,8 @@
     <string name="categoryAdd">Δεν Υπάρχει Αυτή Η Κατηγορία. Θέλετε Να Την Προσθέσεται;</string>
     <string name="info_info">ΠΛΗΡΟφορίες</string>
     <string name="noDescription">Καμία Πληροφορία</string>
-    <string name="apply">Apply</string>
+    <string name="apply">Εφαρμογεί</string>
+    <string name="filter">Φίλτρα</string>
+    <string name="brand">Μάρκα</string>
+    <string name="brandAdd">Δεν Υπάρχει Αυτή Η Μάρκα. Θέλετε Να Την Προσθέσεται;</string>
 </resources>

@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import android.os.Bundle;
 import java.util.ArrayList;
@@ -22,9 +23,54 @@ import java.util.Objects;
 public class MainPage extends AppCompatActivity {
 
     ArrayList<Food> foods;
-    // NEW Drawer
+
+
     public DrawerLayout drawerLayout;
     public ActionBarDrawerToggle actionBarDrawerToggle;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main_page);
+
+
+        getFoods();
+
+        Button start = findViewById(R.id.start);
+        Button add = findViewById(R.id.add);
+        Button delete = findViewById(R.id.delete);
+
+        start.setOnClickListener(view -> {
+            Intent intent = new Intent(MainPage.this, MainActivity.class);
+            sort(foods);
+            intent.putParcelableArrayListExtra("foods", foods);
+            intent.putExtra("activity","add");
+            startActivityForResult(intent, 1);
+        });
+
+        add.setOnClickListener(view -> {
+            Intent intent = new Intent(MainPage.this, AddActivity.class);
+            startActivityForResult(intent, 1);
+        });
+
+        delete.setOnClickListener(view -> {
+            Intent intent = new Intent(MainPage.this, MainActivity.class);
+            sort(foods);
+            intent.putParcelableArrayListExtra("foods", foods);
+            intent.putExtra("activity","delete");
+            startActivityForResult(intent, 1);
+        });
+
+        //Κουμπί πάνω αριστερά
+        drawerLayout = findViewById(R.id.drawer);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+                R.string.nav_open, R.string.nav_close);
+
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
 
     public static void sort(ArrayList<Food> arrayList) {
         Arrays.sort(new ArrayList[]{arrayList});
@@ -39,90 +85,90 @@ public class MainPage extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_page);
-
-        getFoods();
-
-        Button start = findViewById(R.id.start);
-        Button add = findViewById(R.id.add);
-        Button delete = findViewById(R.id.delete);
-
-        start.setOnClickListener(view -> {
-            Intent intent = new Intent(MainPage.this, MainActivity.class);
-            sort(foods);
-            intent.putParcelableArrayListExtra("foods", foods);
-            startActivityForResult(intent, 1);
-        });
-
-        add.setOnClickListener(view -> {
-            Intent intent = new Intent(MainPage.this, AddActivity.class);
-            startActivityForResult(intent, 1);
-        });
-
-        delete.setOnClickListener(view -> {
-            Intent intent = new Intent(MainPage.this, DeleteActivity.class);
-            sort(foods);
-            intent.putParcelableArrayListExtra("foods", foods);
-            startActivityForResult(intent, 1);
-        });
-
-        // NEW Drawer
-        drawerLayout = findViewById(R.id.drawer);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
-                R.string.nav_open, R.string.nav_close);
-
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
-
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    /**
+     * Παίρνει όλα τα φαγητά από την βάση δεδομένων
+     */
+    private void getFoods() {
+        SqlHandler sqlHandler = new SqlHandler(this, null, 1);
+        if(!getDatabasePath("data").exists())
+            sqlHandler.importDatabase();
+        foods = new ArrayList<>();
+        foods = sqlHandler.getAll();
+        sqlHandler.close();
     }
 
-    // NEW Drawer
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (actionBarDrawerToggle.onOptionsItemSelected(item))
-            return true;
-        return super.onOptionsItemSelected(item);
+
+    public void start(MenuItem item) {
+        minimize();
+        Intent intent = new Intent(MainPage.this, MainActivity.class);
+        sort(foods);
+        intent.putExtra("activity","add");
+        intent.putParcelableArrayListExtra("foods", foods);
+        startActivityForResult(intent, 1);
+    }
+
+    public void add(MenuItem item) {
+        minimize();
+        Intent intent = new Intent(MainPage.this, AddActivity.class);
+        startActivityForResult(intent, 1);
+    }
+
+    public void delete(MenuItem item) {
+        minimize();
+        Intent intent = new Intent(MainPage.this, MainActivity.class);
+        sort(foods);
+        intent.putExtra("activity","delete");
+        intent.putParcelableArrayListExtra("foods", foods);
+        startActivityForResult(intent, 1);
+    }
+
+    public void favorites(MenuItem item) {
+        minimize();
+        Intent intent = new Intent(MainPage.this, FavoriteActivity.class);
+        startActivityForResult(intent, 1);
+    }
+
+    public void minimize() {
+        DrawerLayout drawer = findViewById(R.id.drawer);
+        if(drawer.isDrawerOpen(GravityCompat.START))
+            drawer.closeDrawer(GravityCompat.START);
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         getFoods();
+        //Διαγραφή
         if (resultCode == -1) {
-            Intent intent = new Intent(MainPage.this, DeleteActivity.class);
+            Intent intent = new Intent(MainPage.this, MainActivity.class);
             intent.putParcelableArrayListExtra("foods", foods);
+            intent.putExtra("activity","delete");
             startActivityForResult(intent, 1);
         }
-        else if(resultCode == 1) {
+        //Εκκίνηση
+        if(resultCode == 1) {
             Intent intent = new Intent(MainPage.this, MainActivity.class);
             sort(foods);
             assert data != null;
             ArrayList<Food> finalFoods = data.getParcelableArrayListExtra("list");
             intent.putParcelableArrayListExtra("foods", foods);
             intent.putParcelableArrayListExtra("list", finalFoods);
+            intent.putExtra("activity","add");
             startActivityForResult(intent, 1);
 
         }
+        //Προσθήκη Φαγητού
         else if(resultCode == 2) {
             Intent intent = new Intent(MainPage.this, MainActivity.class);
             sort(foods);
             assert data != null;
+            intent.putExtra("activity","delete");
             intent.putParcelableArrayListExtra("foods", foods);
             startActivityForResult(intent, 1);
 
         }
-    }
-
-    private void getFoods() {
-        sqlHandler sqlHandler = new sqlHandler(this, null, 1);
-        if(!getDatabasePath("data").exists())
-            sqlHandler.importDatabase();
-        foods = new ArrayList<>();
-        foods = sqlHandler.getAll();
     }
 
     @Override
@@ -132,29 +178,13 @@ public class MainPage extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-
-    public void start(MenuItem item) {
-        Intent intent = new Intent(MainPage.this, MainActivity.class);
-        sort(foods);
-        intent.putParcelableArrayListExtra("foods", foods);
-        startActivityForResult(intent, 1);
-    }
-
-    public void add(MenuItem item) {
-        System.out.println("Item 2 was Clicked!");
-        Intent intent = new Intent(MainPage.this, AddActivity.class);
-        startActivityForResult(intent, 1);
-    }
-
-    public void delete(MenuItem item) {
-        Intent intent = new Intent(MainPage.this, DeleteActivity.class);
-        sort(foods);
-        intent.putParcelableArrayListExtra("foods", foods);
-        startActivityForResult(intent, 1);
-    }
-
-    public void favorites(MenuItem item) {
-        Intent intent = new Intent(MainPage.this, FavoriteActivity.class);
-        startActivityForResult(intent, 1);
+    /**
+     * Κουμπί πάνω αριστερά
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (actionBarDrawerToggle.onOptionsItemSelected(item))
+            return true;
+        return super.onOptionsItemSelected(item);
     }
 }

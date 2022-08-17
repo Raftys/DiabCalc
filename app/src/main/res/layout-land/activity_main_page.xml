@@ -28,7 +28,7 @@
             android:id="@+id/add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/add3"
+            android:text="@string/add"
             android:textColor="#FFFFFF"
             app:layout_constraintBottom_toTopOf="@+id/delete"
             app:layout_constraintEnd_toEndOf="parent"

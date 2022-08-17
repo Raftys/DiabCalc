@@ -11,7 +11,8 @@ public class Food implements Parcelable {
     private final int id;
     private final String name;
     private String category;
-    private String description;
+    private String brand;
+    private final String description;
     private double car;
     private double fat;
     private final double hour;
@@ -19,16 +20,17 @@ public class Food implements Parcelable {
     private final int edit;
 
 
-    public Food(int id, String name, String category, String description, double car, double fat, double hour, double grammar, int edit) {
+    public Food(int id, String name, String category, String brand, String description, double car, double fat, double hour, double grammar, int edit) {
         this.id = id;
         this.name = name;
+        this.category = category;
+        this.description = description;
+        this.brand = brand;
         this.car = car;
         this.fat = fat;
         this.hour = hour;
         this.grammar = grammar;
         this.edit = edit;
-        this.category=category;
-        this.description = description;
     }
 
     public void calculate() {
@@ -40,6 +42,7 @@ public class Food implements Parcelable {
         id = in.readInt();
         name = in.readString();
         category = in.readString();
+        brand = in.readString();
         description = in.readString();
         car = in.readDouble();
         fat = in.readDouble();
@@ -70,6 +73,10 @@ public class Food implements Parcelable {
 
     public String getFoodCategory() {
         return this.category;
+    }
+
+    public String getFoodBrand() {
+        return this.brand;
     }
 
     public String getFoodDescription() {
@@ -104,6 +111,9 @@ public class Food implements Parcelable {
         this.category = category;
     }
 
+    public void setFoodBrand(String brand) {
+        this.brand = brand;
+    }
 
     @Override
     public int describeContents() {
@@ -115,6 +125,7 @@ public class Food implements Parcelable {
         parcel.writeInt(id);
         parcel.writeString(name);
         parcel.writeString(category);
+        parcel.writeString(brand);
         parcel.writeString(description);
         parcel.writeDouble(car);
         parcel.writeDouble(fat);

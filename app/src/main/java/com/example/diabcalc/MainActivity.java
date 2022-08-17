@@ -8,11 +8,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import android.os.Bundle;
 import android.widget.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Σε αυτό το activity, εμφανίζεται μία λίστα (foods) με όλα τα φαγητά τα οποία υπάρχουν στη βάση
@@ -29,39 +32,37 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter;
     ArrayList<Food> foods;
     ArrayList<Food> finalFoods;
+    ArrayList<String> arrayList;
+    String activity;
 
     ExpandableListView expandableListView;
     CustomExpandableListAdapter expandableListAdapter;
     List<String> expandableListTitle;
     HashMap<String, List<String>> expandableListDetail;
+    HashMap<String, ArrayList<String>> temp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sqlHandler sqlHandler = new sqlHandler(this,null,1);
-        expandableListView = findViewById(R.id.expandedListView);
-        expandableListDetail = getFilter(sqlHandler);
-        expandableListTitle = new ArrayList<>(expandableListDetail.keySet());
-        expandableListAdapter = new CustomExpandableListAdapter(this,expandableListTitle, expandableListDetail);
-        expandableListView.setAdapter(expandableListAdapter);
-
-
+        /*-------------------------------------final Foods---------------------------------------*/
         try {
             finalFoods = getIntent().getParcelableArrayListExtra("list");
+            activity = getIntent().getStringExtra("activity");
         } catch (Exception ignored) {}
 
         if (savedInstanceState != null)
             finalFoods = savedInstanceState.getParcelableArrayList("final");
         else if (finalFoods == null)
             finalFoods = new ArrayList<>();
+        /*---------------------------------------------------------------------------------------*/
 
+        /*-------------------------------------Set ListView--------------------------------------*/
         search_foods = findViewById(R.id.search_food);
-
         foods = getIntent().getParcelableArrayListExtra("foods");
-
-        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList = new ArrayList<>();
         for (Food food : foods)
             arrayList.add(food.getFoodName());
 
@@ -71,37 +72,92 @@ public class MainActivity extends AppCompatActivity {
                 arrayList
         );
         search_foods.setAdapter(adapter);
+        /*---------------------------------------------------------------------------------------*/
 
         search_foods.setOnItemClickListener((adapterView, view, i, l) -> {
-            Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+            Intent intent;
             Food food = null;
             for (Food f : foods)
                 if (arrayList.get(i).equals(f.getFoodName())) {
                     food = f;
                     break;
                 }
-            intent.putExtra("info", food);
-            intent.putParcelableArrayListExtra("list", finalFoods);
+            if(Objects.equals(activity, "delete")) {
+                intent = new Intent(this, AddActivity.class);
+                intent.putExtra("info",food);
+                intent.putExtra("delete",1);
+                intent.putParcelableArrayListExtra("foods", foods);
+            }
+            else {
+                intent = new Intent(MainActivity.this, SecondActivity.class);
+                intent.putExtra("info", food);
+                intent.putParcelableArrayListExtra("list", finalFoods);
+            }
+            intent.putExtra("food",food);
             startActivityForResult(intent, 1);
         });
 
-        Button apply = findViewById(R.id.apply);
-        apply.setOnClickListener(view -> {
-            ArrayList<String> temp = expandableListAdapter.getChecked();
-            for(Food food : foods) {
-                if(!temp.contains(food.getFoodCategory()))
-                    arrayList.remove(food.getFoodName());
-                else if(temp.contains(food.getFoodCategory()) && !arrayList.contains(food.getFoodName()))
-                    arrayList.add(food.getFoodName());
-            }
-            adapter = new ArrayAdapter<>(
-                    MainActivity.this,
-                    android.R.layout.simple_list_item_1,
-                    arrayList
-            );
-            search_foods.setAdapter(adapter);
-        });
 
+        /*Φίλτρα**/
+        SqlHandler sqlHandler = new SqlHandler(this,null,1);
+        expandableListView = findViewById(R.id.expandedListView);
+        expandableListDetail = getFilters(sqlHandler);
+        expandableListTitle = new ArrayList<>(expandableListDetail.keySet());
+        expandableListAdapter = new CustomExpandableListAdapter(this,expandableListTitle, expandableListDetail);
+        expandableListView.setAdapter(expandableListAdapter);
+
+        /*Apply Button**/
+        Button apply = findViewById(R.id.apply);
+        apply.setOnClickListener(view -> setAdapter());
+
+    }
+
+    /*Προσαρμόζει το listview αναλόγος με τα Φίλτρα**/
+    public void setAdapter() {
+        if(expandableListAdapter != null) {
+            adapter.clear();
+            temp = expandableListAdapter.getChecked();
+            for(String string:temp.keySet()) {
+                for(String filter : Objects.requireNonNull(temp.get(string)))
+                    System.out.println(filter);
+            }
+            if (Objects.requireNonNull(temp.get(getResources().getString(R.string.category))).isEmpty()) {
+                if (Objects.requireNonNull(temp.get(getResources().getString(R.string.brand))).isEmpty())
+                    for (Food food : foods)
+                        adapter.add(food.getFoodName());
+                else
+                    for (Food food : foods)
+                        if (Objects.requireNonNull(temp.get(getResources().getString(R.string.brand))).contains(food.getFoodBrand()))
+                            adapter.add(food.getFoodName());
+            } else {
+                if (Objects.requireNonNull(temp.get(getResources().getString(R.string.brand))).isEmpty()) {
+                    for (Food food : foods)
+                        if (Objects.requireNonNull(temp.get(getResources().getString(R.string.category))).contains(food.getFoodCategory()))
+                            adapter.add(food.getFoodName());
+                } else
+                    for (Food food : foods)
+                        if (Objects.requireNonNull(temp.get(getResources().getString(R.string.category))).contains(food.getFoodCategory()) && Objects.requireNonNull(temp.get(getResources().getString(R.string.brand))).contains(food.getFoodBrand()))
+                            adapter.add(food.getFoodName());
+            }
+        }
+        System.out.println("Adapter Notified");
+        adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * @param sqlHandler βάση δεδομένων
+     * @return τις κατηγορίες και τις μάρκες που επιλέχτηκαν
+     */
+    public HashMap<String, List<String>> getFilters(SqlHandler sqlHandler) {
+        HashMap<String, List<String>> expandableListDetail = new HashMap<>();
+
+        List<String> categories = sqlHandler.getInfo(SqlHandler.COLUMN_CATEGORY);
+
+        List<String> brands = sqlHandler.getInfo(SqlHandler.COLUMN_BRAND);
+
+        expandableListDetail.put(getResources().getString(R.string.category), categories);
+        expandableListDetail.put(getResources().getString(R.string.brand), brands);
+        return expandableListDetail;
     }
 
     /**
@@ -112,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        setAdapter();
+
         if (resultCode == 1 || resultCode == -1) {
             assert data != null;
             this.finalFoods = data.getParcelableArrayListExtra("list");
@@ -137,24 +195,19 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+        MenuItem filters = menu.findItem(R.id.filters);
+        filters.setVisible(true);
+        filters.setOnMenuItemClickListener(menuItem -> {
+            DrawerLayout drawer = findViewById(R.id.drawer);
+            if(drawer.isDrawerOpen(GravityCompat.END))
+                drawer.closeDrawer(GravityCompat.END);
+            else
+                drawer.openDrawer(GravityCompat.END);
+            return false;
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
-    public static HashMap<String, List<String>> getFilter(sqlHandler sqlHandler) {
-        HashMap<String, List<String>> expandableListDetail = new HashMap<>();
 
-        List<String> categories = sqlHandler.getCategories();
-
-        List<String> producers = new ArrayList<>();
-        producers.add("temp1");
-        producers.add("temp2");
-        producers.add("temp3");
-        producers.add("temp4");
-
-
-
-        expandableListDetail.put("Categories", categories);
-        expandableListDetail.put("Producer", producers);
-        return expandableListDetail;
-    }
 }

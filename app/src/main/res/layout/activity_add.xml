@@ -26,13 +26,35 @@
         android:layout_height="56dp"
         android:hint="@string/category"
         app:layout_constraintTop_toBottomOf="@+id/name"
+        app:layout_constraintBottom_toTopOf="@+id/brand_menu"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="MissingConstraints">
+
+        <AutoCompleteTextView
+            android:id="@+id/categoryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:textColorHint="#616161"
+            tools:ignore="TextContrastCheck" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/brand_menu"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+        android:layout_width="250dp"
+        android:layout_height="56dp"
+        android:hint="@string/brand"
+        app:layout_constraintTop_toBottomOf="@+id/category_menu"
         app:layout_constraintBottom_toTopOf="@+id/description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="MissingConstraints">
 
         <AutoCompleteTextView
-            android:id="@+id/autoTextview"
+            android:id="@+id/brandText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
@@ -49,7 +71,7 @@
         android:importantForAutofill="no"
         android:inputType="text"
         android:textColorHint="#757575"
-        app:layout_constraintTop_toBottomOf="@+id/category_menu"
+        app:layout_constraintTop_toBottomOf="@+id/brand_menu"
         app:layout_constraintBottom_toTopOf="@+id/carbohydrates"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

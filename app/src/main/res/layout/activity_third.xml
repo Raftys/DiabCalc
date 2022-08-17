@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/newMenu"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/back4"
+        app:layout_constraintStart_toEndOf="@+id/back"
         tools:ignore="TextContrastCheck" />
 
     <Button
@@ -66,7 +66,7 @@
         tools:ignore="TextContrastCheck" />
 
     <Button
-        android:id="@+id/back4"
+        android:id="@+id/back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

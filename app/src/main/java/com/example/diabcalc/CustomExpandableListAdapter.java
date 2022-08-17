@@ -15,19 +15,31 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+/**
+ * Επεξεργασία scroll listview, για φιλτράρισμα λιστών
+ */
 public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     private final Context context;
     private final List<String> expandableListTitle;
     private final HashMap<String, List<String>> expandableListDetail;
-    private final ArrayList<String> checked;
+    private final ArrayList<String> checkedCategories;
+    private final ArrayList<String> checkedBrands;
+    private final ArrayList<Scroll> temp;
+    View view;
 
 
     public CustomExpandableListAdapter(Context context, List<String> expandableListTitle, HashMap<String, List<String>> expandableListDetail) {
-        checked = new ArrayList<>();
+        checkedCategories = new ArrayList<>();
+        checkedBrands = new ArrayList<>();
+        temp = new ArrayList<>();
         this.context = context;
         this.expandableListTitle = expandableListTitle;
         this.expandableListDetail = expandableListDetail;
+        for(String id : expandableListDetail.keySet())
+            for(String name: Objects.requireNonNull(expandableListDetail.get(id)))
+                temp.add(new Scroll(name));
+
     }
 
     @Override
@@ -40,6 +52,14 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         return expandedListPosition;
     }
 
+    public Scroll getBox(String name) {
+        for(Scroll scroll: temp) {
+            if (name.equals(scroll.getName()))
+                return scroll;
+        }
+        return null;
+    }
+
     @SuppressLint("InflateParams")
     @Override
     public View getChildView(int listPosition, final int expandedListPosition,
@@ -50,13 +70,28 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.checkbox, null);
         }
+        view = convertView;
+        Scroll scroll= getBox(expandedListText);
         CheckBox checkBox = convertView.findViewById(R.id.expandedListItem);
-        checkBox.setText(expandedListText);
+        checkBox.setText(scroll.getName());
+        checkBox.setChecked(scroll.getCheck());
         checkBox.setOnClickListener(view -> {
-            if(checkBox.isChecked())
-                checked.add(expandedListText);
-            else
-                checked.remove(expandedListText);
+            temp.remove(scroll);
+            scroll.setCheck(!scroll.getCheck());
+            temp.add(scroll);
+            notifyDataSetChanged();
+            if(listPosition == 0 ) {
+                if (checkBox.isChecked() && !checkedBrands.contains(expandedListText))
+                    checkedBrands.add(expandedListText);
+                else if (!checkBox.isChecked())
+                    checkedBrands.remove(expandedListText);
+            }
+            else if(listPosition == 1 ) {
+                if (checkBox.isChecked() && !checkedCategories.contains(expandedListText))
+                    checkedCategories.add(expandedListText);
+                else if (!checkBox.isChecked())
+                    checkedCategories.remove(expandedListText);
+            }
         });
         return convertView;
     }
@@ -108,7 +143,10 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
-    public ArrayList<String> getChecked() {
-        return this.checked;
+    public HashMap<String,ArrayList<String>> getChecked() {
+        HashMap<String,ArrayList<String>> hashMap = new HashMap<>();
+        hashMap.put(context.getResources().getString(R.string.category), checkedCategories);
+        hashMap.put(context.getResources().getString(R.string.brand),checkedBrands);
+        return hashMap;
     }
 }

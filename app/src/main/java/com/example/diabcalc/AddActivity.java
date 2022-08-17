@@ -1,12 +1,15 @@
 package com.example.diabcalc;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,99 +25,145 @@ import java.util.ArrayList;
 public class AddActivity extends AppCompatActivity {
 
     private Context context;
-    private AutoCompleteTextView autoCompleteTextView;
+    private AutoCompleteTextView autoCompleteTextViewCategory;
+    private AutoCompleteTextView autoCompleteTextViewBrand;
     ArrayAdapter<String> arrayAdapter;
     ArrayList<String> categories;
+    ArrayList<String> brands;
+    int delete;
+    Food food;
+    String old_food;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
+        this.context = this;
 
+
+        /*Σε περίπτωση που μπώ στο Activity για επεξεργασία δεδομένων*/
+        delete = getIntent().getIntExtra("delete",0);
+
+        SqlHandler sqlHandler = new SqlHandler(this, null,1);
+
+        /*EditTexts*/
         EditText name = findViewById(R.id.name);
         EditText carbohydrates = findViewById(R.id.carbohydrates);
         EditText fat = findViewById(R.id.fat);
         EditText hour = findViewById(R.id.hour);
         EditText description = findViewById(R.id.description);
-        context = this;
-
         fat.setHint(getResources().getString(R.string.fat) + " (100)");
         carbohydrates.setHint(getResources().getString(R.string.carbohydrates) +" (100)");
 
-        autoCompleteTextView = (AutoCompleteTextView)findViewById(R.id.autoTextview);
-        sqlHandler sqlHandler = new sqlHandler(this, null,1);
-        categories = sqlHandler.getCategories();
-        arrayAdapter = new ArrayAdapter<>(
-                AddActivity.this,
-                android.R.layout.simple_list_item_1,
-                categories
-        );
-        autoCompleteTextView.setAdapter(arrayAdapter);
-        autoCompleteTextView.setThreshold(1);
+        /*Category**/
+        setCategory(sqlHandler);
 
-
+        /*Brand**/
+        setBrand(sqlHandler);
 
         Button add = findViewById(R.id.addFoodToDB);
 
+        /*DeleteActivity**/
+        if(delete == 1) {
+            food = getIntent().getParcelableExtra("info");
+            old_food = food.getFoodName();
+            name.setText(food.getFoodName());
+            carbohydrates.setText(Double.toString(food.getFoodCar()));
+            fat.setText(Double.toString(food.getFoodFat()));
+            hour.setText(Double.toString(food.getFoodHour()));
+            description.setText(food.getFoodDescription());
+            autoCompleteTextViewCategory.setText(food.getFoodCategory());
+            autoCompleteTextViewBrand.setText(food.getFoodBrand());
+            add.setText(getResources().getText(R.string.edit));
+        }
+
+        /*Προσθήκη φαγητόυ ή επεξεργασία αυτού*/
         add.setOnClickListener(view -> {
+            /*μη επαρκείς πληροφορίες*/
             if (!name.getText().toString().isEmpty() &&
                     !carbohydrates.getText().toString().isEmpty() &&
                     !fat.getText().toString().isEmpty() &&
                     !hour.getText().toString().isEmpty()) {
-                if (nameExist(name.getText().toString().trim().substring(0, 1).toUpperCase() + name.getText().toString().trim().substring(1)))
+                /*ήρθε για edit και το όνομα υπάρχει ήδη*/
+                if(delete == 1)
+                if (nameExist(name.getText().toString().trim().substring(0, 1).toUpperCase() + name.getText().toString().trim().substring(1)) && delete == 0 )
                     Toast.makeText(AddActivity.this, getResources().getString(R.string.foodExists), Toast.LENGTH_SHORT).show();
                 int k = generateId(sqlHandler);
                 Food food = new Food(k,
                         name.getText().toString().trim().substring(0, 1).toUpperCase() + name.getText().toString().trim().substring(1),
-                        "null",
+                        "No Category",
+                        "No Brand",
                         description.getText().toString(),
                         Double.parseDouble(carbohydrates.getText().toString()),
                         Double.parseDouble(fat.getText().toString()),
                         Double.parseDouble(hour.getText().toString()),
                         100,
                         1);
-                if(!categories.contains(autoCompleteTextView.getText().toString())) {
-                    food.setFoodCategory(autoCompleteTextView.getText().toString());
-                    addCategory(sqlHandler, food);
+                /*Η κατηγορία δεν υπάρχει*/
+                if(!categories.contains(autoCompleteTextViewCategory.getText().toString()) && !autoCompleteTextViewCategory.getText().toString().equals("")) {
+                    food.setFoodCategory(autoCompleteTextViewCategory.getText().toString());
+                    addCategory(sqlHandler);
                 }
                 else {
-                    food.setFoodCategory(autoCompleteTextView.getText().toString());
-                    addFood(sqlHandler,food);
+                    food.setFoodCategory(autoCompleteTextViewCategory.getText().toString());
                 }
+                /*Η μάρκα δεν υπάρχει*/
+                if(!brands.contains(autoCompleteTextViewBrand.getText().toString()) && !autoCompleteTextViewBrand.getText().toString().equals("")) {
+                    food.setFoodCategory(autoCompleteTextViewBrand.getText().toString());
+                    addBrand(sqlHandler);
+                }
+                else {
+                    food.setFoodBrand(autoCompleteTextViewBrand.getText().toString());
+                }
+                addFood(sqlHandler,food);
             } else {
                 Toast.makeText(AddActivity.this, getResources().getString(R.string.notEnoughInformation), Toast.LENGTH_SHORT).show();
-                System.out.println(autoCompleteTextView.getText());
-
             }
         });
     }
 
-    public void addCategory(sqlHandler sqlHandler, Food food) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(getResources().getString(R.string.categoryAdd))
-                .setPositiveButton(getResources().getString(R.string.yes), (dialog, id) -> {
-                    addFood(sqlHandler,food);
-                    categories = new ArrayList<>();
-                    categories = sqlHandler.getCategories();
-                    arrayAdapter = new ArrayAdapter<>(
-                            AddActivity.this,
-                            android.R.layout.simple_list_item_1,
-                            categories
-                    );
-                    autoCompleteTextView.setAdapter(arrayAdapter);
-                    autoCompleteTextView.setThreshold(1);
-                }).setNegativeButton(getResources().getString(R.string.no), (dialog, id) -> {
-                });
-        builder.create().show();
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        getMenuInflater().inflate(R.menu.delete, menu);
+        MenuItem item = menu.findItem(R.id.delete_food);
+        if(delete == 1) {
+            item.setVisible(true);
+            item.setOnMenuItemClickListener(menuItem -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage(getResources().getString(R.string.areYouSure))
+                        .setPositiveButton(getResources().getString(R.string.yes), (dialog, id) -> {
+                            SqlHandler sqlHandler = new SqlHandler(context, null, 1);
+                            if (sqlHandler.deleteFood(old_food)) {
+                                Toast.makeText(AddActivity.this, getResources().getString(R.string.deleteConfirm), Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else
+                                Toast.makeText(AddActivity.this, getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                        }).setNegativeButton(getResources().getString(R.string.no), (dialog, id) -> {
+                        });
+                builder.create().show();
+                return false;
+            });
+        }
+
+        return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * @param name όνομα
+     * @return true αν υπάρχει στην βάση φαγητό με αυτό το όνομα
+     */
     public boolean nameExist(String name) {
-        sqlHandler sqlHandler = new sqlHandler(context, null, 1);
+        SqlHandler sqlHandler = new SqlHandler(context, null, 1);
         Food food = sqlHandler.findFood(name);
         return food != null;
     }
 
-    public int generateId(sqlHandler sqlHandler) {
+    /**
+     * random id
+     * @return random int
+     */
+    public int generateId(SqlHandler sqlHandler) {
         ArrayList<Food> foods = sqlHandler.getAll();
         for (int i = 0; i < foods.size(); i++)
             if (i != foods.get(i).getFoodId())
@@ -122,9 +171,98 @@ public class AddActivity extends AppCompatActivity {
         return foods.get(foods.size() - 1).getFoodId() + 1;
     }
 
-    public void addFood(sqlHandler sqlHandler, Food food) {
+    /**
+     * Προσθήκη κατηγορίες στην βάση
+     * @param sqlHandler βάση δεδομένων
+     */
+    public void addCategory(SqlHandler sqlHandler) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(getResources().getString(R.string.categoryAdd))
+                .setPositiveButton(getResources().getString(R.string.yes), (dialog, id) -> {
+                    categories = new ArrayList<>();
+                    categories = sqlHandler.getInfo(SqlHandler.COLUMN_CATEGORY);
+                    arrayAdapter = new ArrayAdapter<>(
+                            AddActivity.this,
+                            android.R.layout.simple_list_item_1,
+                            categories
+                    );
+                    autoCompleteTextViewCategory.setAdapter(arrayAdapter);
+                    autoCompleteTextViewCategory.setThreshold(1);
+                }).setNegativeButton(getResources().getString(R.string.no), (dialog, id) -> {
+                });
+        builder.create().show();
+    }
+
+    /**
+     * Προσθήκη μάρκας στην βάση
+     * @param sqlHandler βάση δεδομένων
+     */
+    public void addBrand(SqlHandler sqlHandler) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(getResources().getString(R.string.brandAdd))
+                .setPositiveButton(getResources().getString(R.string.yes), (dialog, id) -> {
+                    brands = new ArrayList<>();
+                    brands = sqlHandler.getInfo(SqlHandler.COLUMN_BRAND);
+                    arrayAdapter = new ArrayAdapter<>(
+                            AddActivity.this,
+                            android.R.layout.simple_list_item_1,
+                            brands
+                    );
+                    autoCompleteTextViewBrand.setAdapter(arrayAdapter);
+                    autoCompleteTextViewBrand.setThreshold(1);
+                }).setNegativeButton(getResources().getString(R.string.no), (dialog, id) -> {
+                });
+        builder.create().show();
+    }
+
+    /**
+     * Προσθήκη φαγητού στην βάση
+     * @param sqlHandler βάση δεδομένων
+     * @param food φαγητό
+     */
+    public void addFood(SqlHandler sqlHandler, Food food) {
+        if(delete == 1) {
+            sqlHandler.deleteFood(old_food);
+            Toast.makeText(AddActivity.this, getResources().getString(R.string.foodEdited), Toast.LENGTH_SHORT).show();
+        }
+        else
+            Toast.makeText(AddActivity.this, getResources().getString(R.string.foodAdded), Toast.LENGTH_SHORT).show();
         sqlHandler.addFood(food);
-        Toast.makeText(AddActivity.this, getResources().getString(R.string.foodAdded), Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Set Categories for view
+     * @param sqlHandler sqlHandler
+     */
+    public void setCategory(SqlHandler sqlHandler) {
+        autoCompleteTextViewCategory = findViewById(R.id.categoryText);
+        categories = sqlHandler.getInfo(SqlHandler.COLUMN_CATEGORY);
+        categories.remove("No Category");
+        arrayAdapter = new ArrayAdapter<>(
+                AddActivity.this,
+                android.R.layout.simple_list_item_1,
+                categories
+        );
+        autoCompleteTextViewCategory.setAdapter(arrayAdapter);
+        autoCompleteTextViewCategory.setThreshold(1);
+    }
+
+    /**
+     * Set Brands for view
+     * @param sqlHandler sqlHandler
+     */
+    @SuppressLint("SetTextI18n")
+    public void setBrand(SqlHandler sqlHandler) {
+        autoCompleteTextViewBrand = findViewById(R.id.brandText);
+        brands = sqlHandler.getInfo(SqlHandler.COLUMN_BRAND);
+        brands.remove("No Brand");
+        arrayAdapter = new ArrayAdapter<>(
+                AddActivity.this,
+                android.R.layout.simple_list_item_1,
+                brands
+        );
+        autoCompleteTextViewBrand.setAdapter(arrayAdapter);
+        autoCompleteTextViewBrand.setThreshold(1);
     }
 
 }
