@@ -38,7 +38,7 @@ public class MainPage extends AppCompatActivity {
 
         Button start = findViewById(R.id.start);
         Button add = findViewById(R.id.add);
-        Button delete = findViewById(R.id.delete);
+        Button delete = findViewById(R.id.edit);
 
         start.setOnClickListener(view -> {
             Intent intent = new Intent(MainPage.this, MainActivity.class);

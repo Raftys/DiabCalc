@@ -43,12 +43,12 @@
     <string name="menuAlreadyExists">Το Μενού Υπάρχει Ήδη</string>
     <string name="menuAdded">Το Μενού Προστέθηκε Στα Αγαπημένα</string>
     <string name="description">Περιγραφή</string>
-    <string name="category">Κατηγορία</string>
     <string name="categoryAdd">Δεν Υπάρχει Αυτή Η Κατηγορία. Θέλετε Να Την Προσθέσεται;</string>
     <string name="info_info">ΠΛΗΡΟφορίες</string>
     <string name="noDescription">Καμία Πληροφορία</string>
-    <string name="apply">Εφαρμογεί</string>
+    <string name="apply">Εφαρμογή</string>
     <string name="filter">Φίλτρα</string>
+    <string name="category">Κατηγορία</string>
     <string name="brand">Μάρκα</string>
     <string name="brandAdd">Δεν Υπάρχει Αυτή Η Μάρκα. Θέλετε Να Την Προσθέσεται;</string>
 </resources>

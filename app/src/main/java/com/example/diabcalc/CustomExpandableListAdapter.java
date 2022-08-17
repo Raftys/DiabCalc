@@ -80,13 +80,13 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
             scroll.setCheck(!scroll.getCheck());
             temp.add(scroll);
             notifyDataSetChanged();
-            if(listPosition == 0 ) {
+            if(expandableListTitle.get(listPosition).equals(context.getResources().getString(R.string.brand)))  {
                 if (checkBox.isChecked() && !checkedBrands.contains(expandedListText))
                     checkedBrands.add(expandedListText);
                 else if (!checkBox.isChecked())
                     checkedBrands.remove(expandedListText);
             }
-            else if(listPosition == 1 ) {
+            else if(expandableListTitle.get(listPosition).equals(context.getResources().getString(R.string.category))) {
                 if (checkBox.isChecked() && !checkedCategories.contains(expandedListText))
                     checkedCategories.add(expandedListText);
                 else if (!checkBox.isChecked())
