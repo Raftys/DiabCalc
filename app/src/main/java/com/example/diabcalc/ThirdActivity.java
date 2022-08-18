@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,9 +49,6 @@ public class ThirdActivity extends AppCompatActivity {
 
         intent = getIntent();
         context = this;
-
-        bool = intent.getIntExtra("favorite",0);
-
         /*
           Λίστα με τα επιλεγμένα φαγητά
          */
@@ -95,6 +93,7 @@ public class ThirdActivity extends AppCompatActivity {
         Button add = findViewById(R.id.addFood);
         add.setOnClickListener(view -> {
             Intent i = new Intent();
+            i.putExtra("favorite",intent.getIntExtra("favorite",0));
             i.putParcelableArrayListExtra("list", finalFoods);
             setResult(1, i);
             finish();
@@ -102,6 +101,8 @@ public class ThirdActivity extends AppCompatActivity {
 
         /*καινούργιο μενού**/
         Button newMenu = findViewById(R.id.newMenu);
+        if(intent.getIntExtra("favorite",0)==1)
+            newMenu.setVisibility(View.INVISIBLE);
         newMenu.setOnClickListener(view -> {
             Intent i = new Intent();
             setResult(2, i);
@@ -113,8 +114,9 @@ public class ThirdActivity extends AppCompatActivity {
         back.setOnClickListener(view -> {
             Intent i = new Intent();
             Food food = finalFoods.get(finalFoods.size() - 1);
-            intent.putExtra("info", food);
+            i.putExtra("info", food);
             i.putParcelableArrayListExtra("list", finalFoods);
+            i.putExtra("favorite",getIntent().getIntExtra("favorite",0));
             setResult(-1, i);
             finish();
         });
@@ -132,7 +134,7 @@ public class ThirdActivity extends AppCompatActivity {
         item.setOnMenuItemClickListener(menuItem -> {
             if(item.isChecked()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage(getResources().getString(R.string.areYouSure))
+                builder.setMessage(getResources().getString(R.string.areYouSureMenu))
                         .setPositiveButton(getResources().getString(R.string.yes), (dialog, id) -> {
                             item.setIcon(android.R.drawable.star_big_off);
                             item.setChecked(false);
@@ -171,6 +173,16 @@ public class ThirdActivity extends AppCompatActivity {
             }
             return false;
         });
+
+        if(getIntent().getIntExtra("favorite",0)==1) {
+            MenuItem item1 = menu.getItem(1);
+            item1.setVisible(true);
+            item1.setOnMenuItemClickListener(menuItem -> {
+                setResult(3);
+                finish();
+                return false;
+            });
+        }
         return super.onCreateOptionsMenu(menu);
 
     }

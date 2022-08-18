@@ -5,12 +5,11 @@
     <string name="carbohydrates">Υδατάνθρακες</string>
     <string name="fat">Λιπαρά</string>
     <string name="hour">Ώρα/ες</string>
-    <string name="back">Πίσω</string>
-    <string name="delete">Διαγραφή</string>
+    <string name="back">Πισω</string>
     <string name="textview">Κείμενο</string>
-    <string name="next">Επόμενο</string>
+    <string name="next">Επομενο</string>
     <string name="grammars">Γραμμάρια</string>
-    <string name="start">Εκκίνηση</string>
+    <string name="start">Εκκινηση</string>
     <string name="search_food">Αναζήτηση</string>
     <string name="default_image_for_main_page">δεν ξέρω</string>
     <string name="search">Αναζήτηση</string>
@@ -18,10 +17,10 @@
     <string name="nav_open">οπεν</string>
     <string name="nav_close">κλοσ</string>
     <string name="favorite">Αγαπημένα</string>
-    <string name="add">Προσθήκη</string>
-    <string name="edit">Επεξεργασία</string>
+    <string name="add">Προσθηκη</string>
+    <string name="edit">Επεξεργασια</string>
     <string name="text2">DiabCalc</string>
-    <string name="new_menu">Καινούργιο</string>
+    <string name="new_menu">Καινουργιο</string>
     <string name="sum">Σύνολο</string>
     <string name="totalUnits">Σύνολο Μονάδων</string>
     <string name="totalCarbohydrates">Σύνολο Υδατανθράκων</string>
@@ -30,6 +29,7 @@
     <string name="yes">Ναι</string>
     <string name="no">Όχι</string>
     <string name="areYouSure">Είστε Σίγουροι Ότι Θέλετε Να Διαγράψεται Αυτό Το Φαγητό;</string>
+    <string name="areYouSureMenu">Είστε Σίγουροι Ότι Θέλετε Να Διαγράψεται Αυτό Το Μενού;</string>
     <string name="deleteConfirm">Το Φαγητό Διαγράφηκε</string>
     <string name="error">Σφάλμα</string>
     <string name="foodExists">Το Φαγητό Υπάρχει Ήδη </string>
@@ -51,4 +51,7 @@
     <string name="category">Κατηγορία</string>
     <string name="brand">Μάρκα</string>
     <string name="brandAdd">Δεν Υπάρχει Αυτή Η Μάρκα. Θέλετε Να Την Προσθέσεται;</string>
+    <string name="reset">Επανεκκινηση</string>
+    <string name="inputNeeded">Απαιτούνται Γραμμάρια</string>
+    <string name="menus">Μενού</string>
 </resources>

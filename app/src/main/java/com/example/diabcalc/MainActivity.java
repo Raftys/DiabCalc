@@ -1,6 +1,8 @@
 package com.example.diabcalc;
 
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,23 +31,28 @@ public class MainActivity extends AppCompatActivity {
      * finalFoods: μία λίστα με τα φαγητά που επιλέγει ο χρήστης ότι θα καταναλώσει
      */
     ListView search_foods;
-    ArrayAdapter<String> adapter;
-    ArrayList<Food> foods;
+    private static ArrayAdapter<String> adapter;
+    private static ArrayList<Food> foods;
     ArrayList<Food> finalFoods;
     ArrayList<String> arrayList;
     String activity;
 
     ExpandableListView expandableListView;
-    CustomExpandableListAdapter expandableListAdapter;
+    @SuppressLint("StaticFieldLeak")
+    private static CustomExpandableListAdapter expandableListAdapter;
     List<String> expandableListTitle;
     HashMap<String, List<String>> expandableListDetail;
-    HashMap<String, ArrayList<String>> temp;
+    @SuppressLint("StaticFieldLeak")
+    private static Context context;
+    int bool;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = this;
+
 
         /*-------------------------------------final Foods---------------------------------------*/
         try {
@@ -58,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
         else if (finalFoods == null)
             finalFoods = new ArrayList<>();
         /*---------------------------------------------------------------------------------------*/
+
+        if(getIntent().getIntExtra("favorite",0)==1) {
+            Intent intent = new Intent();
+            intent.putParcelableArrayListExtra("list",finalFoods);
+            intent.putExtra("favorite",getIntent().getIntExtra("favorite",0));
+            setResult(4,intent);
+        }
 
         /*-------------------------------------Set ListView--------------------------------------*/
         search_foods = findViewById(R.id.search_food);
@@ -91,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
             else {
                 intent = new Intent(MainActivity.this, SecondActivity.class);
                 intent.putExtra("info", food);
+                intent.putExtra("favorite",getIntent().getIntExtra("favorite",0));
                 intent.putParcelableArrayListExtra("list", finalFoods);
             }
             intent.putExtra("food",food);
@@ -106,41 +121,40 @@ public class MainActivity extends AppCompatActivity {
         expandableListAdapter = new CustomExpandableListAdapter(this,expandableListTitle, expandableListDetail);
         expandableListView.setAdapter(expandableListAdapter);
 
-        /*Apply Button**/
-        Button apply = findViewById(R.id.apply);
-        apply.setOnClickListener(view -> setAdapter());
+        /*Reset Button**/
+        Button reset = findViewById(R.id.reset);
+        reset.setOnClickListener(view -> {
+            expandableListAdapter.reset();
+            setAdapter();
+        });
 
     }
 
     /*Προσαρμόζει το listview αναλόγος με τα Φίλτρα**/
-    public void setAdapter() {
+    public static void setAdapter() {
         if(expandableListAdapter != null) {
+            HashMap<String, ArrayList<String>> temp = expandableListAdapter.getChecked();
             adapter.clear();
-            temp = expandableListAdapter.getChecked();
-            for(String string:temp.keySet()) {
-                for(String filter : Objects.requireNonNull(temp.get(string)))
-                    System.out.println(filter);
-            }
-            if (Objects.requireNonNull(temp.get(getResources().getString(R.string.category))).isEmpty()) {
-                if (Objects.requireNonNull(temp.get(getResources().getString(R.string.brand))).isEmpty())
+            if (Objects.requireNonNull(temp.get(context.getResources().getString(R.string.category))).isEmpty()) {
+                if (Objects.requireNonNull(temp.get(context.getResources().getString(R.string.brand))).isEmpty())
                     for (Food food : foods)
                         adapter.add(food.getFoodName());
                 else
                     for (Food food : foods)
-                        if (Objects.requireNonNull(temp.get(getResources().getString(R.string.brand))).contains(food.getFoodBrand()))
+                        if (Objects.requireNonNull(temp.get(context.getResources().getString(R.string.brand))).contains(food.getFoodBrand()))
                             adapter.add(food.getFoodName());
             } else {
-                if (Objects.requireNonNull(temp.get(getResources().getString(R.string.brand))).isEmpty()) {
+                if (Objects.requireNonNull(temp.get(context.getResources().getString(R.string.brand))).isEmpty()) {
                     for (Food food : foods)
-                        if (Objects.requireNonNull(temp.get(getResources().getString(R.string.category))).contains(food.getFoodCategory()))
+                        if (Objects.requireNonNull(temp.get(context.getResources().getString(R.string.category))).contains(food.getFoodCategory()))
                             adapter.add(food.getFoodName());
                 } else
                     for (Food food : foods)
-                        if (Objects.requireNonNull(temp.get(getResources().getString(R.string.category))).contains(food.getFoodCategory()) && Objects.requireNonNull(temp.get(getResources().getString(R.string.brand))).contains(food.getFoodBrand()))
+                        if (Objects.requireNonNull(temp.get(context.getResources().getString(R.string.category))).contains(food.getFoodCategory()) &&
+                                Objects.requireNonNull(temp.get(context.getResources().getString(R.string.brand))).contains(food.getFoodBrand()))
                             adapter.add(food.getFoodName());
             }
         }
-        System.out.println("Adapter Notified");
         adapter.notifyDataSetChanged();
     }
 
@@ -173,7 +187,18 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == 1 || resultCode == -1) {
             assert data != null;
             this.finalFoods = data.getParcelableArrayListExtra("list");
-        } else
+            if(getIntent().getIntExtra("favorite",0)==1) {
+                Intent intent = new Intent();
+                intent.putParcelableArrayListExtra("list",finalFoods);
+                intent.putExtra("favorite",getIntent().getIntExtra("favorite",0));
+                setResult(4,intent);
+            }
+        }
+        else if(resultCode == 3) {
+            setResult(3);
+            finish();
+        }
+        else
             finalFoods = new ArrayList<>();
     }
 

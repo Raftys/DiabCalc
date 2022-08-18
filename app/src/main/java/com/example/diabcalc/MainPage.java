@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import android.os.Bundle;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -85,6 +86,10 @@ public class MainPage extends AppCompatActivity {
         }
     }
 
+    public static String stripAccents(String s) {
+        return Normalizer.normalize(s, Normalizer.Form.NFD).replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+    }
+
     /**
      * Παίρνει όλα τα φαγητά από την βάση δεδομένων
      */
@@ -143,12 +148,16 @@ public class MainPage extends AppCompatActivity {
         //Διαγραφή
         if (resultCode == -1) {
             Intent intent = new Intent(MainPage.this, MainActivity.class);
+            assert data != null;
+            if(data.getIntExtra("favorite",0)==1) {
+                intent = new Intent(MainPage.this, FavoriteActivity.class);
+            }
             intent.putParcelableArrayListExtra("foods", foods);
             intent.putExtra("activity","delete");
             startActivityForResult(intent, 1);
         }
         //Εκκίνηση
-        if(resultCode == 1) {
+        else if(resultCode == 1) {
             Intent intent = new Intent(MainPage.this, MainActivity.class);
             sort(foods);
             assert data != null;
@@ -156,18 +165,29 @@ public class MainPage extends AppCompatActivity {
             intent.putParcelableArrayListExtra("foods", foods);
             intent.putParcelableArrayListExtra("list", finalFoods);
             intent.putExtra("activity","add");
+            intent.putExtra("favorite",data.getIntExtra("favorite",0));
             startActivityForResult(intent, 1);
 
         }
         //Προσθήκη Φαγητού
         else if(resultCode == 2) {
+            assert data != null;
             Intent intent = new Intent(MainPage.this, MainActivity.class);
             sort(foods);
-            assert data != null;
             intent.putExtra("activity","delete");
             intent.putParcelableArrayListExtra("foods", foods);
             startActivityForResult(intent, 1);
-
+        }
+        else if(resultCode == 3) {
+            Intent intent = new Intent(MainPage.this, FavoriteActivity.class);
+            startActivityForResult(intent, 1);
+        }
+        else if(resultCode == 4) {
+            assert data != null;
+            Intent intent = new Intent(MainPage.this, ThirdActivity.class);
+            intent.putExtra("favorite",data.getIntExtra("favorite",0));
+            intent.putParcelableArrayListExtra("list",data.getParcelableArrayListExtra("list"));
+            startActivityForResult(intent, 1);
         }
     }
 

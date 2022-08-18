@@ -7,7 +7,13 @@
         android:icon="@android:drawable/star_big_off"
         app:showAsAction="ifRoom"
         android:checked="false"
-        android:title="">
-    </item>
+        android:title=""/>
+
+    <item
+        android:id="@+id/menus"
+        android:title="@string/menus"
+        android:visible="false"
+        app:showAsAction="collapseActionView|ifRoom" />
+
 
 </menu>

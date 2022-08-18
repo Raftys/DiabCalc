@@ -83,6 +83,7 @@ public class FavoriteActivity extends AppCompatActivity {
             assert data != null;
             ArrayList<Food> finalFoods = data.getParcelableArrayListExtra("list");
             intent.putParcelableArrayListExtra("list", finalFoods);
+            intent.putExtra("favorite", 1);
             setResult(1,intent);
             finish();
         }

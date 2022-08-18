@@ -23,8 +23,8 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     private final Context context;
     private final List<String> expandableListTitle;
     private final HashMap<String, List<String>> expandableListDetail;
-    private final ArrayList<String> checkedCategories;
-    private final ArrayList<String> checkedBrands;
+    private ArrayList<String> checkedCategories;
+    private ArrayList<String> checkedBrands;
     private final ArrayList<Scroll> temp;
     View view;
 
@@ -93,6 +93,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                     checkedCategories.remove(expandedListText);
             }
         });
+        MainActivity.setAdapter();
         return convertView;
     }
 
@@ -148,5 +149,14 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         hashMap.put(context.getResources().getString(R.string.category), checkedCategories);
         hashMap.put(context.getResources().getString(R.string.brand),checkedBrands);
         return hashMap;
+    }
+
+    public void reset() {
+        checkedCategories = new ArrayList<>();
+        checkedBrands = new ArrayList<>();
+        for(Scroll scroll: temp) {
+            scroll.setCheck(false);
+        }
+        notifyDataSetChanged();
     }
 }

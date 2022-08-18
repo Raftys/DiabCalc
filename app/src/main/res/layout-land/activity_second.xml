@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/grammars"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/back3" />
+        app:layout_constraintEnd_toStartOf="@+id/back" />
 
 
     <EditText
@@ -29,26 +29,26 @@
         android:textColor="@color/gray"
         android:textColorHint="@color/gray"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/back3"
+        app:layout_constraintEnd_toStartOf="@+id/back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/info"
         tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/next"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:text="@string/next"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/back3"
+        app:layout_constraintStart_toEndOf="@id/back"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints,TextContrastCheck" />
 
     <Button
-        android:id="@+id/back3"
-        android:layout_width="wrap_content"
+        android:id="@+id/back"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:text="@string/back"
         android:textColor="#FFFFFF"

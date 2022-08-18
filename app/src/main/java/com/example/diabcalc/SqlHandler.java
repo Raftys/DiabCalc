@@ -159,7 +159,6 @@ public class SqlHandler extends SQLiteOpenHelper {
                 }
             }
             temp.put(menu, arrayList);
-            System.out.println(menu);
             cursor.close();
         } catch (Exception ignored) {}
         return temp ;
@@ -193,6 +192,15 @@ public class SqlHandler extends SQLiteOpenHelper {
                 }
             cursor.close();
         } catch (Exception ignored) {}
+        for (int i = 0; i < arrayList.size() - 1; i++) {
+            for (int j = i + 1; j < arrayList.size(); j++) {
+                if (MainPage.stripAccents(arrayList.get(i)).compareTo(MainPage.stripAccents(arrayList.get(j))) > 0) {
+                    String line = arrayList.get(i);
+                    arrayList.set(i, arrayList.get(j));
+                    arrayList.set(j, line);
+                }
+            }
+        }
         return arrayList ;
 
     }

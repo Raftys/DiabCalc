@@ -48,11 +48,10 @@ public class SecondActivity extends AppCompatActivity {
                     "<br><b>" + getResources().getString(R.string.description) + ": </b> " + food.getFoodDescription();
         info.setText(Html.fromHtml(info_line));
 
-        Button button_next, button_back;
 
-        button_next = findViewById(R.id.next);
+        Button next = findViewById(R.id.next);
         editText = findViewById(R.id.grammars);
-        button_next.setOnClickListener(view -> {
+        next.setOnClickListener(view -> {
             if (!editText.getText().toString().isEmpty()) {
                 Intent i = new Intent(SecondActivity.this, ThirdActivity.class);
                 double grammars = Double.parseDouble(editText.getText().toString());
@@ -63,16 +62,18 @@ public class SecondActivity extends AppCompatActivity {
                 }
                 finalFoods.add(food);
                 i.putParcelableArrayListExtra("list", finalFoods);
+                i.putExtra("favorite",getIntent().getIntExtra("favorite",0));
                 intent.putExtra("info", food);
                 startActivityForResult(i, 1);
             } else
-                Toast.makeText(SecondActivity.this, "Input Need", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SecondActivity.this, getResources().getText(R.string.inputNeeded), Toast.LENGTH_SHORT).show();
         });
 
-        button_back = findViewById(R.id.back3);
-        button_back.setOnClickListener(view -> {
+        Button back = findViewById(R.id.back);
+        back.setOnClickListener(view -> {
             Intent i = new Intent();
             i.putParcelableArrayListExtra("list", finalFoods);
+            i.putExtra("favorite",getIntent().getIntExtra("favorite",0));
             setResult(-1, i);
             finish();
         });
@@ -90,10 +91,15 @@ public class SecondActivity extends AppCompatActivity {
             assert data != null;
             ArrayList<Food> finalFoods = data.getParcelableArrayListExtra("list");
             intent1.putParcelableArrayListExtra("list", finalFoods);
+            intent1.putExtra("favorite",intent.getIntExtra("favorite",0));
             setResult(1, intent1);
             finish();
         } else if (resultCode == 2) {
             setResult(2, intent1);
+            finish();
+        }
+        else if (resultCode == 3) {
+            setResult(3);
             finish();
         }
     }
