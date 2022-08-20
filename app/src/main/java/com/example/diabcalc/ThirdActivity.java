@@ -42,6 +42,7 @@ public class ThirdActivity extends AppCompatActivity {
     Context context;
     @SuppressLint("StaticFieldLeak")
     public static Activity activity;
+    ArrayList<MenuItem> items;
 
     @SuppressLint({"DefaultLocale", "SetTextI18n", "UseSupportActionBar"})
     @Override
@@ -50,6 +51,7 @@ public class ThirdActivity extends AppCompatActivity {
         setContentView(R.layout.activity_third);
         context = this;
         activity = this;
+        items = new ArrayList<>();
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
@@ -115,27 +117,29 @@ public class ThirdActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Intent intent = new Intent(ThirdActivity.this, MainPage.class);
-        startActivity(intent);
+        if(!items.contains(item)) {
+            Intent intent = new Intent(ThirdActivity.this, MainPage.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.third_activity_menu, menu);
-        MenuItem item = menu.getItem(0);
+        items.add(menu.getItem(0));
         if(bool == 1) {
-            item.setIcon(android.R.drawable.star_big_on);
-            item.setChecked(true);
+            items.get(0).setIcon(android.R.drawable.star_big_on);
+            items.get(0).setChecked(true);
         }
         SqlHandler sqlHandler = new SqlHandler(ThirdActivity.this,null,1);
-        item.setOnMenuItemClickListener(menuItem -> {
-            if(item.isChecked()) {
+        items.get(0).setOnMenuItemClickListener(menuItem -> {
+            if(items.get(0).isChecked()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setMessage(getResources().getString(R.string.areYouSureMenu))
                         .setPositiveButton(getResources().getString(R.string.yes), (dialog, id) -> {
-                            item.setIcon(android.R.drawable.star_big_off);
-                            item.setChecked(false);
+                            items.get(0).setIcon(android.R.drawable.star_big_off);
+                            items.get(0).setChecked(false);
                             String name =getIntent().getStringExtra("menu_name");
                             if(name != null)
                                 sqlHandler.deleteMenu(getIntent().getStringExtra("menu_name"));
@@ -161,8 +165,8 @@ public class ThirdActivity extends AppCompatActivity {
                         Toast.makeText(this, getResources().getString(R.string.menuAlreadyExists), Toast.LENGTH_SHORT).show();
                     else {
                         sqlHandler.addMenu(finalFoods,menu_name);
-                        item.setIcon(android.R.drawable.star_big_on);
-                        item.setChecked(true);
+                        items.get(0).setIcon(android.R.drawable.star_big_on);
+                        items.get(0).setChecked(true);
                         Toast.makeText(this, getResources().getString(R.string.menuAdded), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -173,9 +177,9 @@ public class ThirdActivity extends AppCompatActivity {
         });
 
         if(Objects.equals(getIntent().getStringExtra("activity"), "favorite")){
-            MenuItem item1 = menu.getItem(1);
-            item1.setVisible(true);
-            item1.setOnMenuItemClickListener(menuItem -> {
+            items.add(menu.getItem(1));
+            items.get(1).setVisible(true);
+            items.get(1).setOnMenuItemClickListener(menuItem -> {
                 finish();
                 return false;
             });

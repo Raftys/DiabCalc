@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private static Context context;
     @SuppressLint("StaticFieldLeak")
     public static Activity activity;
+    ArrayList<MenuItem> items;
 
 
     @Override
@@ -58,7 +59,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         context = this;
         activity = this;
+        items = new ArrayList<>();
 
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         /*-------------------------------------final Foods---------------------------------------*/
         try {
@@ -189,14 +192,23 @@ public class MainActivity extends AppCompatActivity {
         return expandableListDetail;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(!items.contains(item)) {
+            Intent intent = new Intent(MainActivity.this, MainPage.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * Μενου, για αναζήτηση και φιλτράρισμα
      */
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.search_menu, menu);
-        MenuItem item = menu.findItem(R.id.search_food);
-        SearchView searchView = (SearchView) item.getActionView();
+        items.add(menu.getItem(0));
+        SearchView searchView = (SearchView) items.get(0).getActionView();
         searchView.setSaveEnabled(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -211,9 +223,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        MenuItem filters = menu.findItem(R.id.filters);
-        filters.setVisible(true);
-        filters.setOnMenuItemClickListener(menuItem -> {
+        items.add(menu.getItem(1));
+        items.get(1).setVisible(true);
+        items.get(1).setOnMenuItemClickListener(menuItem -> {
             DrawerLayout drawer = findViewById(R.id.drawer);
             if(drawer.isDrawerOpen(GravityCompat.END))
                 drawer.closeDrawer(GravityCompat.END);
