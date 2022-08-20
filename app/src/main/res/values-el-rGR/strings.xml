@@ -53,5 +53,10 @@
     <string name="brandAdd">Δεν Υπάρχει Αυτή Η Μάρκα. Θέλετε Να Την Προσθέσεται;</string>
     <string name="reset">Επανεκκινηση</string>
     <string name="inputNeeded">Απαιτούνται Γραμμάρια</string>
-    <string name="menus">Μενού</string>
+    <string name="menus">Μενου</string>
+    <string name="delete">Διαγραφή</string>
+    <string name="perMeal">Ανά Τεμάχιο/Μερίδα</string>
+    <string name="piece">Τεμάχιο/α</string>
+    <string name="quantity">Ποσότητα</string>
+    <string name="mainMenu">Αρχικη</string>
 </resources>

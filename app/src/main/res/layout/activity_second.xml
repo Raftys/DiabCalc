@@ -24,15 +24,39 @@
         android:id="@+id/grammars"
         android:layout_width="190dp"
         android:layout_height="56dp"
-        android:hint="@string/grammars"
+        android:hint="@string/quantity"
         android:importantForAutofill="no"
         android:inputType="numberDecimal"
         android:textColor="#757575"
         app:layout_constraintTop_toBottomOf="@+id/info"
         app:layout_constraintBottom_toTopOf="@+id/next"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/option"
         tools:ignore="TextContrastCheck" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/option"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+        android:layout_width="150dp"
+        android:layout_height="56dp"
+        app:layout_constraintTop_toBottomOf="@+id/info"
+        app:layout_constraintBottom_toTopOf="@+id/next"
+        app:layout_constraintStart_toEndOf="@id/grammars"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="MissingConstraints">
+
+    <AutoCompleteTextView
+        android:id="@+id/optionText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/grammars"
+        android:textSize="16sp"
+        android:inputType="none"
+        android:textColorHint="#616161"
+        tools:ignore="TextContrastCheck" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
         android:id="@+id/next"
@@ -57,6 +81,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/next"
         tools:ignore="TextContrastCheck" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

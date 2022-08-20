@@ -1,6 +1,7 @@
 package com.example.diabcalc;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.InputType;
@@ -12,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 
 /**
@@ -35,24 +36,27 @@ public class ThirdActivity extends AppCompatActivity {
 
     ListView listView;
     ArrayAdapter<String> adapter;
-    Intent intent;
     ArrayList<Food> finalFoods;
     int bool;
     private String menu_name = "";
     Context context;
+    @SuppressLint("StaticFieldLeak")
+    public static Activity activity;
 
-    @SuppressLint({"DefaultLocale", "SetTextI18n"})
+    @SuppressLint({"DefaultLocale", "SetTextI18n", "UseSupportActionBar"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_third);
-
-        intent = getIntent();
         context = this;
+        activity = this;
+
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
         /*
           Λίστα με τα επιλεγμένα φαγητά
          */
-        finalFoods = intent.getParcelableArrayListExtra("list");
+        finalFoods = getIntent().getParcelableArrayListExtra("list");
         ArrayList<String> list = new ArrayList<>();
         for (Food f : finalFoods)
             list.add(getResources().getString(R.string.name) + ": " + f.getFoodName() +
@@ -62,7 +66,6 @@ public class ThirdActivity extends AppCompatActivity {
                     "\n" + getResources().getString(R.string.fat) + ": " + String.format("%.2f", f.getFoodFat()) +
                     " "  + getResources().getString(R.string.in) + ": " + String.format("%.2f", f.getFoodHour()) + " " + getResources().getString(R.string.hour) +
                     "\n" + getResources().getString(R.string.sum) + ": " + String.format("%.2f", f.getFoodCar() + f.getFoodFat()));
-
         listView = findViewById(R.id.final_list);
         adapter = new ArrayAdapter<>(
                 ThirdActivity.this,
@@ -70,7 +73,6 @@ public class ThirdActivity extends AppCompatActivity {
                 list
         );
         listView.setAdapter(adapter);
-
 
         /*
           Σύνολο μονάδων
@@ -92,34 +94,30 @@ public class ThirdActivity extends AppCompatActivity {
         /*κουμπί για επιλογή/προσθήκη φαγητού στο μενού του χρήστη από τη λίστα με όλα τα φαγητά**/
         Button add = findViewById(R.id.addFood);
         add.setOnClickListener(view -> {
-            Intent i = new Intent();
-            i.putExtra("favorite",intent.getIntExtra("favorite",0));
-            i.putParcelableArrayListExtra("list", finalFoods);
-            setResult(1, i);
-            finish();
+            Intent intent = new Intent(ThirdActivity.this,MainActivity.class);
+            intent.putParcelableArrayListExtra("list", finalFoods);
+            startActivity(intent);
         });
 
         /*καινούργιο μενού**/
         Button newMenu = findViewById(R.id.newMenu);
-        if(intent.getIntExtra("favorite",0)==1)
+        if(Objects.equals(getIntent().getStringExtra("activity"), "favorite"))
             newMenu.setVisibility(View.INVISIBLE);
         newMenu.setOnClickListener(view -> {
-            Intent i = new Intent();
-            setResult(2, i);
-            finish();
+            Intent intent = new Intent(ThirdActivity.this, MainActivity.class);
+            startActivity(intent);
         });
 
         /*Πίσω**/
         Button back = findViewById(R.id.back);
-        back.setOnClickListener(view -> {
-            Intent i = new Intent();
-            Food food = finalFoods.get(finalFoods.size() - 1);
-            i.putExtra("info", food);
-            i.putParcelableArrayListExtra("list", finalFoods);
-            i.putExtra("favorite",getIntent().getIntExtra("favorite",0));
-            setResult(-1, i);
-            finish();
-        });
+        back.setOnClickListener(view -> finish());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent = new Intent(ThirdActivity.this, MainPage.class);
+        startActivity(intent);
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -138,9 +136,9 @@ public class ThirdActivity extends AppCompatActivity {
                         .setPositiveButton(getResources().getString(R.string.yes), (dialog, id) -> {
                             item.setIcon(android.R.drawable.star_big_off);
                             item.setChecked(false);
-                            String name =intent.getStringExtra("menu_name");
+                            String name =getIntent().getStringExtra("menu_name");
                             if(name != null)
-                                sqlHandler.deleteMenu(intent.getStringExtra("menu_name"));
+                                sqlHandler.deleteMenu(getIntent().getStringExtra("menu_name"));
                             else
                                 sqlHandler.deleteMenu(menu_name);
                             Toast.makeText(this, getResources().getString(R.string.menuRemoved), Toast.LENGTH_SHORT).show();
@@ -174,17 +172,15 @@ public class ThirdActivity extends AppCompatActivity {
             return false;
         });
 
-        if(getIntent().getIntExtra("favorite",0)==1) {
+        if(Objects.equals(getIntent().getStringExtra("activity"), "favorite")){
             MenuItem item1 = menu.getItem(1);
             item1.setVisible(true);
             item1.setOnMenuItemClickListener(menuItem -> {
-                setResult(3);
                 finish();
                 return false;
             });
         }
         return super.onCreateOptionsMenu(menu);
-
     }
 
 }

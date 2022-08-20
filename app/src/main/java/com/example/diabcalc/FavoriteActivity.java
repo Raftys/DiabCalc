@@ -1,9 +1,10 @@
 package com.example.diabcalc;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,17 +18,45 @@ import java.util.Objects;
 
 public class FavoriteActivity extends AppCompatActivity {
 
+    /**
+     * listview: ListView, για την εμφάνιση των μενού
+     * adapter: για να μπαίνουν τα μενού στο listview
+     * favorites: λίστα με ονόματα όλων των μενού και όλων των φαγητών που βρίσκονται σε αυτά
+     * finalFoods: μία λίστα με τα φαγητά που επιλέγει ο χρήστης ότι θα καταναλώσει
+     */
     ListView listview;
-    HashMap<String,ArrayList<Food>> favorites;
-    SqlHandler sqlHandler;
-    List<HashMap<String,String>> list;
     SimpleAdapter adapter;
+    HashMap<String,ArrayList<Food>> favorites;
+    List<HashMap<String,String>> list;
+
+    @SuppressLint("StaticFieldLeak")
+    public static Activity activity;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_favorite);
+        activity = this;
+
+        setList();
+
+        listview.setOnItemClickListener((adapterView, view, i, l) -> {
+            Intent intent = new Intent(FavoriteActivity.this, ThirdActivity.class);
+            ArrayList<Food> finalFoods = favorites.get(list.get(i).get("line1"));
+            intent.putParcelableArrayListExtra("list", finalFoods);
+            intent.putExtra("activity","favorite");
+            intent.putExtra("menu_name",list.get(i).get("line1"));
+            startActivity(intent);
+        });
+    }
 
     /**
      * Ορίζει την λίστα με τα αγαπημένα
      */
     void setList() {
+        SqlHandler sqlHandler = new SqlHandler(this, null, 1);
         favorites = sqlHandler.getMenu();
+        sqlHandler.close();
         list = new ArrayList<>();
         adapter = new SimpleAdapter(this, list,
                 R.layout.list_item,
@@ -48,56 +77,11 @@ public class FavoriteActivity extends AppCompatActivity {
 
         listview = findViewById(R.id.favorites);
         listview.setAdapter(adapter);
-
-
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorite);
-        sqlHandler = new SqlHandler(this, null, 1);
-        setList();
-
-        listview.setOnItemClickListener((adapterView, view, i, l) -> {
-            Intent intent = new Intent(FavoriteActivity.this, ThirdActivity.class);
-            ArrayList<Food> finalFoods = favorites.get(list.get(i).get("line1"));
-            intent.putParcelableArrayListExtra("list", finalFoods);
-            intent.putExtra("favorite",1);
-            intent.putExtra("menu_name",list.get(i).get("line1"));
-            startActivityForResult(intent, 1);
-        });
-    }
-
 
     /**
-    1 -> add
-    2 -> new
-    else -> back
+     * αναζήτηση
      */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Intent intent = new Intent();
-        if (resultCode == 1) {
-            assert data != null;
-            ArrayList<Food> finalFoods = data.getParcelableArrayListExtra("list");
-            intent.putParcelableArrayListExtra("list", finalFoods);
-            intent.putExtra("favorite", 1);
-            setResult(1,intent);
-            finish();
-        }
-        else if(resultCode == 2) {
-            setResult(2,intent);
-            finish();
-        }
-        else {
-            favorites = new HashMap<>();
-            setList();
-        }
-    }
-
-
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.search_menu, menu);

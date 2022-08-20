@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Διαχείριση Βάσης δεδομένων
@@ -29,6 +30,8 @@ public class SqlHandler extends SQLiteOpenHelper {
     public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_CAR = "car";
     public static final String COLUMN_FAT = "fat";
+    public static final String COLUMN_CAR_PER_MEAL = "car_per_meal";
+    public static final String COLUMN_FAT_PER_MEAL = "fat_per_meal";
     public static final String COLUMN_HOUR = "hour";
     public static final String COLUMN_GRAMMAR = "grammar";
     /*0 = Default
@@ -56,7 +59,10 @@ public class SqlHandler extends SQLiteOpenHelper {
      * Στην βάση δεδομένων
      * @param food φαγητό
      */
-    public void addFood(@NonNull Food food) {
+    public void addFood(@NonNull Food food, String old_food) {
+
+        resetMenu(old_food,food.getFoodName());
+
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, food.getFoodId());
         values.put(COLUMN_NAME, food.getFoodName());
@@ -65,6 +71,8 @@ public class SqlHandler extends SQLiteOpenHelper {
         values.put(COLUMN_DESCRIPTION,food.getFoodDescription());
         values.put(COLUMN_CAR, food.getFoodCar());
         values.put(COLUMN_FAT, food.getFoodFat());
+        values.put(COLUMN_CAR_PER_MEAL, food.getFoodCarPerMeal());
+        values.put(COLUMN_FAT_PER_MEAL, food.getFoodFatPerMeal());
         values.put(COLUMN_HOUR, food.getFoodHour());
         values.put(COLUMN_GRAMMAR, food.getFoodGrammar());
         values.put(COLUMN_EDITED,food.getFoodEdit());
@@ -122,13 +130,39 @@ public class SqlHandler extends SQLiteOpenHelper {
                     Double.parseDouble(cursor.getString(6)),
                     Double.parseDouble(cursor.getString(7)),
                     Double.parseDouble(cursor.getString(8)),
-                    Integer.parseInt(cursor.getString(9))));
+                    Integer.parseInt(cursor.getString(9)),
+                    (cursor.getString(10) != null ? Double.parseDouble(cursor.getString(10)) : 0),
+                    (cursor.getString(11) != null ? Double.parseDouble(cursor.getString(11)) : 0)));
             cursor.moveToNext();
             size--;
         }
         cursor.close();
         return arrayList;
     }
+
+    public void resetMenu(String old_name,String new_name) {
+        if(!new_name.equals("null")) {
+            String query = "Select * FROM " + TABLE_MENU + " WHERE " +
+                    COLUMN_NAME + " = '" + old_name + "'";
+            SQLiteDatabase db = this.getWritableDatabase();
+            @SuppressLint("Recycle") Cursor cursor = db.rawQuery(query, null);
+            int size = cursor.getCount() - 1;
+            cursor.moveToFirst();
+            while (size >= 0) {
+                double grammar = Double.parseDouble(cursor.getString(1));
+                String menu_name = cursor.getString(2);
+                cursor.moveToNext();
+                addFood(new_name, grammar, menu_name);
+                size--;
+            }
+            db.close();
+        }
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.delete(TABLE_MENU, COLUMN_NAME + " = ?",
+                new String[]{String.valueOf(old_name)});
+        database.close();
+    }
+
 
     /**
      * @return όλα τα μενού που βρίσκονται στην βάση δεδομένων
@@ -147,9 +181,11 @@ public class SqlHandler extends SQLiteOpenHelper {
             while (size >= 0) {
                 if (menu.equals(cursor.getString(2))) {
                     Food f = findFood(cursor.getString(0));
-                    f.setFoodGrammar(Double.parseDouble(cursor.getString(1)));
-                    f.calculate();
-                    arrayList.add(f);
+                    if(f.getFoodName() != null) {
+                        f.setFoodGrammar(Double.parseDouble(cursor.getString(1)));
+                        f.calculate();
+                        arrayList.add(f);
+                    }
                     cursor.moveToNext();
                     size--;
                 } else {
@@ -226,8 +262,10 @@ public class SqlHandler extends SQLiteOpenHelper {
                     Double.parseDouble(cursor.getString(6)),
                     Double.parseDouble(cursor.getString(7)),
                     Double.parseDouble(cursor.getString(8)),
-                    Integer.parseInt(cursor.getString(9)));
-        return null;
+                    Integer.parseInt(cursor.getString(9)),
+                    (cursor.getString(10) != null ? Double.parseDouble(cursor.getString(10)) : 0),
+                    (cursor.getString(11) != null ? Double.parseDouble(cursor.getString(11)) : 0));
+        return new Food();
     }
 
     /**

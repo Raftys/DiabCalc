@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ThirdActivity">
 
+
     <ListView
         android:id="@+id/final_list"
         android:layout_width="0dp"
@@ -72,5 +73,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/addFood"
         app:layout_constraintStart_toStartOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

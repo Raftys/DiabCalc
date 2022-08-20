@@ -2,16 +2,19 @@ package com.example.diabcalc;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.text.Html;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 /**
@@ -25,27 +28,49 @@ public class SecondActivity extends AppCompatActivity {
     Intent intent;
     ArrayList<Food> finalFoods;
 
+    private AutoCompleteTextView autoCompleteTextView;
+    ArrayAdapter<String> arrayAdapter;
+    ArrayList<String> arrayList;
+
+    @SuppressLint("StaticFieldLeak")
+    public static Activity activity;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
+        activity = this;
 
         intent = getIntent();
         finalFoods = intent.getParcelableArrayListExtra("list");
         Food food = intent.getParcelableExtra("info");
 
+        autoCompleteTextView = findViewById(R.id.optionText);
+        arrayList = new ArrayList<>();
+        arrayList.add(getResources().getString(R.string.grammars));
+        if(food.getFoodCarPerMeal()>0) {
+            arrayList.add(getResources().getString(R.string.piece));
+        }
+        arrayAdapter = new ArrayAdapter<>(
+                SecondActivity.this,
+                android.R.layout.simple_list_item_1,
+                arrayList
+        );
+        autoCompleteTextView.setAdapter(arrayAdapter);
+        autoCompleteTextView.setThreshold(1);
+
         TextView info = findViewById(R.id.info);
 
-        String info_line;
+        String info_line = "<b>" + getResources().getString(R.string.name) + ": </b> " +food.getFoodName() +
+                "<br><b>" + getResources().getString(R.string.category) + ": </b> " + food.getFoodCategory();
         if(food.getFoodDescription() == null)
-            info_line = "<b>" + getResources().getString(R.string.name) + ": </b> " +food.getFoodName() +
-                    "<br><b>" + getResources().getString(R.string.category) + ": </b> " + food.getFoodCategory() +
-                    "<br><b>" + getResources().getString(R.string.description) + ": </b> " + getResources().getString(R.string.noDescription);
+            info_line += "<br><b>" + getResources().getString(R.string.description) + ": </b> " + getResources().getString(R.string.noDescription);
         else
-            info_line = "<b>" + getResources().getString(R.string.name) + ": </b> " + food.getFoodName() +
-                    "<br><b>" + getResources().getString(R.string.category) + ": </b> " + food.getFoodCategory() +
-                    "<br><b>" + getResources().getString(R.string.description) + ": </b> " + food.getFoodDescription();
+            info_line += "<br><b>" + getResources().getString(R.string.description) + ": </b> " + food.getFoodDescription();
+        if(food.getFoodFatPerMeal()>0)
+            info_line += "<br><b>" + getResources().getString(R.string.carbohydrates) + " " +getResources().getString(R.string.perMeal) + ": </b> " + food.getFoodCarPerMeal() +
+                "<br><b>" + getResources().getString(R.string.fat) + " " +getResources().getString(R.string.perMeal) + ": </b> " + food.getFoodFatPerMeal();
         info.setText(Html.fromHtml(info_line));
 
 
@@ -55,54 +80,25 @@ public class SecondActivity extends AppCompatActivity {
             if (!editText.getText().toString().isEmpty()) {
                 Intent i = new Intent(SecondActivity.this, ThirdActivity.class);
                 double grammars = Double.parseDouble(editText.getText().toString());
-                food.setFoodGrammar(grammars);
-                food.calculate();
+                if(autoCompleteTextView.getText().toString().equals(getResources().getString(R.string.piece)))
+                    food.calculatePerMeal(grammars);
+                else {
+                    food.setFoodGrammar(grammars);
+                    food.calculate();
+                }
                 if (finalFoods.contains(food)) {
                     finalFoods.remove(finalFoods.size() - 1);
                 }
                 finalFoods.add(food);
                 i.putParcelableArrayListExtra("list", finalFoods);
-                i.putExtra("favorite",getIntent().getIntExtra("favorite",0));
-                intent.putExtra("info", food);
-                startActivityForResult(i, 1);
+                if(Objects.equals(getIntent().getStringExtra("activity"), "favorite"))
+                    i.putExtra("activity",getIntent().getStringExtra("activity"));
+                startActivity(i);
             } else
                 Toast.makeText(SecondActivity.this, getResources().getText(R.string.inputNeeded), Toast.LENGTH_SHORT).show();
         });
 
         Button back = findViewById(R.id.back);
-        back.setOnClickListener(view -> {
-            Intent i = new Intent();
-            i.putParcelableArrayListExtra("list", finalFoods);
-            i.putExtra("favorite",getIntent().getIntExtra("favorite",0));
-            setResult(-1, i);
-            finish();
-        });
+        back.setOnClickListener(view -> finish());
     }
-
-    /**
-     * @param resultCode = 1 -> προσθήκη φαγητού στο μενού
-     *                   resultCode = 2 -> νέα μενού
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Intent intent1 = new Intent();
-        if (resultCode == 1) {
-            assert data != null;
-            ArrayList<Food> finalFoods = data.getParcelableArrayListExtra("list");
-            intent1.putParcelableArrayListExtra("list", finalFoods);
-            intent1.putExtra("favorite",intent.getIntExtra("favorite",0));
-            setResult(1, intent1);
-            finish();
-        } else if (resultCode == 2) {
-            setResult(2, intent1);
-            finish();
-        }
-        else if (resultCode == 3) {
-            setResult(3);
-            finish();
-        }
-    }
-
-
 }

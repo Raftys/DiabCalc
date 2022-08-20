@@ -54,5 +54,9 @@
     <string name="reset">reset</string>
     <string name="inputNeeded">Input Needed</string>
     <string name="menus">Menus</string>
+    <string name="perMeal">Per Meal</string>
+    <string name="piece">Piece(s)</string>
+    <string name="quantity">Quantity</string>
+    <string name="mainMenu">Main Menu</string>
 
 </resources>

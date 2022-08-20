@@ -1,6 +1,7 @@
 package com.example.diabcalc;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -8,12 +9,14 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Αυτό το activity είναι φτιαγμένο για να μπορεί ο χρήστης να προσθέτει φαγητά στην Βάση Δεδομένων.
@@ -24,15 +27,26 @@ import java.util.ArrayList;
  */
 public class AddActivity extends AppCompatActivity {
 
-    private Context context;
+    /**
+     * Κατηγορίες
+     */
     private AutoCompleteTextView autoCompleteTextViewCategory;
     private AutoCompleteTextView autoCompleteTextViewBrand;
     ArrayAdapter<String> arrayAdapter;
     ArrayList<String> categories;
     ArrayList<String> brands;
-    int delete;
+
+    /**
+     * last_activity: για να ξέρω από που ήρθε
+     */
+    String last_activity;
     Food food;
     String old_food;
+
+    @SuppressLint("StaticFieldLeak")
+    public static Activity activity;
+    private Context context;
+
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -40,21 +54,25 @@ public class AddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         this.context = this;
-
-
-        /*Σε περίπτωση που μπώ στο Activity για επεξεργασία δεδομένων*/
-        delete = getIntent().getIntExtra("delete",0);
-
+        activity = this;
         SqlHandler sqlHandler = new SqlHandler(this, null,1);
+        old_food = "";
 
-        /*EditTexts*/
+        /*Σε περίπτωση που μπώ στο Activity για επεξεργασία δεδομένων**/
+        last_activity = getIntent().getStringExtra("activity");
+
+        /*EditTexts**/
         EditText name = findViewById(R.id.name);
         EditText carbohydrates = findViewById(R.id.carbohydrates);
         EditText fat = findViewById(R.id.fat);
         EditText hour = findViewById(R.id.hour);
         EditText description = findViewById(R.id.description);
-        fat.setHint(getResources().getString(R.string.fat) + " (100)");
-        carbohydrates.setHint(getResources().getString(R.string.carbohydrates) +" (100)");
+
+        /*TextViews**/
+        TextView carbohydratesReadable = findViewById(R.id.carbohydratesReadable);
+        TextView fatReadable = findViewById(R.id.fatReadable);
+        carbohydratesReadable.setText(getResources().getString(R.string.carbohydrates) +" (100g)");
+        fatReadable.setText(getResources().getString(R.string.fat) + " (100g)");
 
         /*Category**/
         setCategory(sqlHandler);
@@ -62,10 +80,11 @@ public class AddActivity extends AppCompatActivity {
         /*Brand**/
         setBrand(sqlHandler);
 
+        /*Button**/
         Button add = findViewById(R.id.addFoodToDB);
 
         /*DeleteActivity**/
-        if(delete == 1) {
+        if(Objects.equals(last_activity, "edit")) {
             food = getIntent().getParcelableExtra("info");
             old_food = food.getFoodName();
             name.setText(food.getFoodName());
@@ -86,8 +105,7 @@ public class AddActivity extends AppCompatActivity {
                     !fat.getText().toString().isEmpty() &&
                     !hour.getText().toString().isEmpty()) {
                 /*ήρθε για edit και το όνομα υπάρχει ήδη*/
-                if(delete == 1)
-                if (nameExist(name.getText().toString().trim().substring(0, 1).toUpperCase() + name.getText().toString().trim().substring(1)) && delete == 0 )
+                if (nameExist(name.getText().toString().trim().substring(0, 1).toUpperCase() + name.getText().toString().trim().substring(1)) && !last_activity.equals("edit") )
                     Toast.makeText(AddActivity.this, getResources().getString(R.string.foodExists), Toast.LENGTH_SHORT).show();
                 int k = generateId(sqlHandler);
                 Food food = new Food(k,
@@ -99,7 +117,9 @@ public class AddActivity extends AppCompatActivity {
                         Double.parseDouble(fat.getText().toString()),
                         Double.parseDouble(hour.getText().toString()),
                         100,
-                        1);
+                        1,
+                        0,
+                        0);
                 /*Η κατηγορία δεν υπάρχει*/
                 if(!categories.contains(autoCompleteTextViewCategory.getText().toString()) && !autoCompleteTextViewCategory.getText().toString().equals("")) {
                     food.setFoodCategory(autoCompleteTextViewCategory.getText().toString());
@@ -123,11 +143,14 @@ public class AddActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Διαγραφή φαγητού αν έχω έρθει για edit
+     */
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.delete, menu);
         MenuItem item = menu.findItem(R.id.delete_food);
-        if(delete == 1) {
+        if(Objects.equals(last_activity,"edit")) {
             item.setVisible(true);
             item.setOnMenuItemClickListener(menuItem -> {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -135,6 +158,8 @@ public class AddActivity extends AppCompatActivity {
                         .setPositiveButton(getResources().getString(R.string.yes), (dialog, id) -> {
                             SqlHandler sqlHandler = new SqlHandler(context, null, 1);
                             if (sqlHandler.deleteFood(old_food)) {
+                                sqlHandler.resetMenu(food.getFoodName(),"null");
+                                sqlHandler.close();
                                 Toast.makeText(AddActivity.this, getResources().getString(R.string.deleteConfirm), Toast.LENGTH_SHORT).show();
                                 finish();
                             } else
@@ -221,13 +246,13 @@ public class AddActivity extends AppCompatActivity {
      * @param food φαγητό
      */
     public void addFood(SqlHandler sqlHandler, Food food) {
-        if(delete == 1) {
+        if(last_activity.equals("edit")) {
             sqlHandler.deleteFood(old_food);
             Toast.makeText(AddActivity.this, getResources().getString(R.string.foodEdited), Toast.LENGTH_SHORT).show();
         }
         else
             Toast.makeText(AddActivity.this, getResources().getString(R.string.foodAdded), Toast.LENGTH_SHORT).show();
-        sqlHandler.addFood(food);
+        sqlHandler.addFood(food,old_food);
     }
 
     /**

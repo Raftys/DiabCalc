@@ -2,12 +2,12 @@ package com.example.diabcalc;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.GravityCompat;
@@ -27,24 +27,29 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     /**
-     * foods: μία λίστα με όλα τα φαγητά που βρίσκονται στη βάση δεδομένων
+     * search_foods: ListView, για την εμφάνιση των φαγητών
+     * adapter: για να μπαίνουν τα φαγητά στο listview
+     * arrayList: λίστα με ονόματα όλων των φαγητών
      * finalFoods: μία λίστα με τα φαγητά που επιλέγει ο χρήστης ότι θα καταναλώσει
      */
     ListView search_foods;
     private static ArrayAdapter<String> adapter;
-    private static ArrayList<Food> foods;
     ArrayList<Food> finalFoods;
     ArrayList<String> arrayList;
-    String activity;
 
+    /**
+     * Φιλτράρισμα
+     */
     ExpandableListView expandableListView;
     @SuppressLint("StaticFieldLeak")
     private static CustomExpandableListAdapter expandableListAdapter;
     List<String> expandableListTitle;
     HashMap<String, List<String>> expandableListDetail;
+
     @SuppressLint("StaticFieldLeak")
     private static Context context;
-    int bool;
+    @SuppressLint("StaticFieldLeak")
+    public static Activity activity;
 
 
     @Override
@@ -52,12 +57,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
+        activity = this;
 
 
         /*-------------------------------------final Foods---------------------------------------*/
         try {
             finalFoods = getIntent().getParcelableArrayListExtra("list");
-            activity = getIntent().getStringExtra("activity");
         } catch (Exception ignored) {}
 
         if (savedInstanceState != null)
@@ -75,9 +80,9 @@ public class MainActivity extends AppCompatActivity {
 
         /*-------------------------------------Set ListView--------------------------------------*/
         search_foods = findViewById(R.id.search_food);
-        foods = getIntent().getParcelableArrayListExtra("foods");
+        MainPage.getFoods(!getDatabasePath("data").exists());
         arrayList = new ArrayList<>();
-        for (Food food : foods)
+        for (Food food : MainPage.foods)
             arrayList.add(food.getFoodName());
 
         adapter = new ArrayAdapter<>(
@@ -90,26 +95,24 @@ public class MainActivity extends AppCompatActivity {
 
         search_foods.setOnItemClickListener((adapterView, view, i, l) -> {
             Intent intent;
-            Food food = null;
-            for (Food f : foods)
-                if (arrayList.get(i).equals(f.getFoodName())) {
+            Food food = new Food();
+            for (Food f : MainPage.foods)
+                if (adapter.getItem(i).equals(f.getFoodName())) {
                     food = f;
                     break;
                 }
-            if(Objects.equals(activity, "delete")) {
+            if(Objects.equals(getIntent().getStringExtra("activity"), "edit")) {
                 intent = new Intent(this, AddActivity.class);
-                intent.putExtra("info",food);
-                intent.putExtra("delete",1);
-                intent.putParcelableArrayListExtra("foods", foods);
+                intent.putExtra("activity","edit");
             }
             else {
                 intent = new Intent(MainActivity.this, SecondActivity.class);
-                intent.putExtra("info", food);
-                intent.putExtra("favorite",getIntent().getIntExtra("favorite",0));
+                if(Objects.equals(getIntent().getStringExtra("activity"), "favorite"))
+                    intent.putExtra("activity",getIntent().getStringExtra("activity"));
                 intent.putParcelableArrayListExtra("list", finalFoods);
             }
-            intent.putExtra("food",food);
-            startActivityForResult(intent, 1);
+            intent.putExtra("info",food);
+            startActivity(intent);
         });
 
 
@@ -127,7 +130,19 @@ public class MainActivity extends AppCompatActivity {
             expandableListAdapter.reset();
             setAdapter();
         });
+    }
 
+    /**
+     * Set ListView
+     */
+    @Override
+    public void onTopResumedActivityChanged(boolean isTopResumedActivity) {
+        super.onTopResumedActivityChanged(isTopResumedActivity);
+        MainPage.getFoods(!getDatabasePath("data").exists());
+        adapter.clear();
+        for (Food food : MainPage.foods)
+            adapter.add(food.getFoodName());
+        adapter.notifyDataSetChanged();
     }
 
     /*Προσαρμόζει το listview αναλόγος με τα Φίλτρα**/
@@ -137,19 +152,19 @@ public class MainActivity extends AppCompatActivity {
             adapter.clear();
             if (Objects.requireNonNull(temp.get(context.getResources().getString(R.string.category))).isEmpty()) {
                 if (Objects.requireNonNull(temp.get(context.getResources().getString(R.string.brand))).isEmpty())
-                    for (Food food : foods)
+                    for (Food food : MainPage.foods)
                         adapter.add(food.getFoodName());
                 else
-                    for (Food food : foods)
+                    for (Food food : MainPage.foods)
                         if (Objects.requireNonNull(temp.get(context.getResources().getString(R.string.brand))).contains(food.getFoodBrand()))
                             adapter.add(food.getFoodName());
             } else {
                 if (Objects.requireNonNull(temp.get(context.getResources().getString(R.string.brand))).isEmpty()) {
-                    for (Food food : foods)
+                    for (Food food : MainPage.foods)
                         if (Objects.requireNonNull(temp.get(context.getResources().getString(R.string.category))).contains(food.getFoodCategory()))
                             adapter.add(food.getFoodName());
                 } else
-                    for (Food food : foods)
+                    for (Food food : MainPage.foods)
                         if (Objects.requireNonNull(temp.get(context.getResources().getString(R.string.category))).contains(food.getFoodCategory()) &&
                                 Objects.requireNonNull(temp.get(context.getResources().getString(R.string.brand))).contains(food.getFoodBrand()))
                             adapter.add(food.getFoodName());
@@ -175,33 +190,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * @param resultCode = 1 -> προσθήκη φαγητού στο μενού
-     *                   resultCode = 1 -> επιστροφή από Activity 2
-     *                   resultCode = 2 -> νέα μενού
+     * Μενου, για αναζήτηση και φιλτράρισμα
      */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        setAdapter();
-
-        if (resultCode == 1 || resultCode == -1) {
-            assert data != null;
-            this.finalFoods = data.getParcelableArrayListExtra("list");
-            if(getIntent().getIntExtra("favorite",0)==1) {
-                Intent intent = new Intent();
-                intent.putParcelableArrayListExtra("list",finalFoods);
-                intent.putExtra("favorite",getIntent().getIntExtra("favorite",0));
-                setResult(4,intent);
-            }
-        }
-        else if(resultCode == 3) {
-            setResult(3);
-            finish();
-        }
-        else
-            finalFoods = new ArrayList<>();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.search_menu, menu);
@@ -210,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
         searchView.setSaveEnabled(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
+            public boolean onQueryTextSubmit(String query) {
                 return false;
             }
 
@@ -220,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
         MenuItem filters = menu.findItem(R.id.filters);
         filters.setVisible(true);
         filters.setOnMenuItemClickListener(menuItem -> {
@@ -233,6 +224,4 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
-
-
 }
