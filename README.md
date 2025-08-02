@@ -1,25 +1,50 @@
-# DiabCalc BETA VERSION
+# DiabCalc  (BETA)
 
-DiabCalc is a Java-based application designed to help people with diabetes calculate their food intake and determine the corresponding units of insulin.
+**DiabCalc** is a comprehensive Java application designed to empower people with diabetes by simplifying meal planning and insulin dosage calculations.
 
-## Features
+## ✨ Key Features
 
-1. Food Database Integration
+### 🍎 Food Database Integration
+- **Searchable database** of common foods with detailed nutritional info (carbs, fats, proteins)
+- **Custom food/meal creation** - Add personal recipes or frequently eaten meals
+- **Favorites system** - Bookmark frequently used foods for quick access
 
-2. A searchable database of common foods with nutritional info (carbs, fats, proteins).
+### 🧮 Intelligent Calculation Tools
+| Feature | Description |
+|---------|-------------|
+| Carb Counting Assistant | Automatically calculates total carbs per meal |
+| Insulin Suggestion | Recommends units based on your personal ratios |
+| Meal History | Tracks previous calculations for reference |
 
-3. Allow users to add custom foods or meals.
+### ⚙️ Personalized Settings
+- **Customizable ratios**:
+  - Insulin-to-Carb (I:C) ratio
+  - Insulin Sensitivity Factor (ISF)
+  - Target blood glucose range
+- **Dose rounding** options
+- **Dark/Light mode** (if implemented)
 
-4. Carb Counting Assistant
+## 🛠️ Technologies Used
 
-5. Automatically calculate total carbs per meal and suggest insulin units based on user ratios.
+| Category | Technologies |
+|----------|--------------|
+| **Core** | Java 11+, JavaFX |
+| **Build** | Maven, GitHub Actions |
+| **Testing** | JUnit 5, Mockito |
+| **CI/CD** | GitHub Actions |
+| **UI** | CSS, Scene Builder |
 
-6. Insulin-to-Carb Ratio & Correction Factor
+## 📥 Installation
 
-7. Let users set their own I:C ratio and correction factor (ISF) for more personalized calculations.
+```bash
+# Clone the repository
+git clone https://github.com/Raftys/DiabCalc.git
 
+# Navigate to project directory
+cd DiabCalc
 
+# Build with Maven
+mvn clean install
 
-## Technologies Used
-
-- **Programming Language**: Java
+# Run the application
+java -jar target/DiabCalc.jar
